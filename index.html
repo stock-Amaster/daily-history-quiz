@@ -72,7 +72,7 @@
       position: relative;
     }
 
-    /* 도전자 알림 배너 (친구 초대 링크로 들어왔을 때 노출) */
+    /* 도전자 알림 배너 */
     .challenge-banner {
       display: none;
       background: linear-gradient(135deg, #7c2d12, #451a03);
@@ -405,6 +405,7 @@
     const STORAGE_EXP = "history_user_exp";
     const STORAGE_DAILY_DATE = "history_last_quiz_date";
     const STORAGE_DAILY_STAGE = "history_daily_stage";
+    const STORAGE_LAST_SCORE = "history_last_score"; // 최근 획득 점수 저장 키
 
     let quizData = [];
     let currentIdx = 0;
@@ -445,7 +446,6 @@
       document.getElementById('user-duty-text').innerText = rank.duty;
     }
 
-    // URL에 친구의 초대 정보가 묻어있을 때 배너 표시
     function checkInvitedChallenge() {
       const params = new URLSearchParams(window.location.search);
       const challengerRank = params.get('challenger_rank');
@@ -615,7 +615,9 @@
       const resultBox = document.getElementById('result-box');
       resultBox.style.display = 'block';
 
-      document.getElementById('final-score').innerText = "완료";
+      // 저장된 최근 점수가 있으면 표시, 없으면 '완료'
+      const savedScore = localStorage.getItem(STORAGE_LAST_SCORE);
+      document.getElementById('final-score').innerText = savedScore ? `${savedScore}점` : "완료";
       document.getElementById('result-comment').innerText = "오늘 준비된 과거시험을 이미 치르셨습니다!";
       
       const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
@@ -705,6 +707,9 @@
       if (score > 100) score = 100;
       document.getElementById('final-score').innerText = `${score}점`;
 
+      // 획득한 시험 점수를 브라우저에 영구 저장 (0점 버그 방지)
+      localStorage.setItem(STORAGE_LAST_SCORE, score);
+
       const currentExp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const oldRank = getRank(initialExp);
       const newRank = getRank(currentExp);
@@ -739,11 +744,12 @@
     function triggerShareForBonus() {
       const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const rank = getRank(exp);
-      const challengeUrl = `${window.location.origin}${window.location.pathname}?challenger_rank=${encodeURIComponent(rank.tag + ' ' + rank.title)}&score=${score}`;
+      const displayScore = localStorage.getItem(STORAGE_LAST_SCORE) || score;
+      const challengeUrl = `${window.location.origin}${window.location.pathname}?challenger_rank=${encodeURIComponent(rank.tag + ' ' + rank.title)}&score=${displayScore}`;
       
       const shareText = 
 `📜 [조선 과거시험 보너스 초대]
-나의 품계: [${rank.tag}] ${rank.title} (${score}점 달성)
+나의 품계: [${rank.tag}] ${rank.title} (최근 ${displayScore}점 달성)
 
 "내가 오늘 과거시험에서 거둔 성적을 넘볼 자가 있는가?"
 지금 도전하여 당신의 조선 관직을 확인해보라!
@@ -772,15 +778,17 @@ ${challengeUrl}`;
       }
     }
 
-    // 내 실시간 품계와 도발 멘트를 카톡 말풍선 전체에 굵직하게 박아서 복사·공유
+    // 내 실시간 품계와 최근 점수, 누적 문항수를 카톡 말풍선에 박아서 복사·공유
     function shareQuiz() {
       const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const rank = getRank(exp);
-      const challengeUrl = `${window.location.origin}${window.location.pathname}?challenger_rank=${encodeURIComponent(rank.tag + ' ' + rank.title)}&score=${score}`;
+      // 저장된 점수가 있으면 우선 사용, 없으면 현재 score 사용
+      const displayScore = localStorage.getItem(STORAGE_LAST_SCORE) || score;
+      const challengeUrl = `${window.location.origin}${window.location.pathname}?challenger_rank=${encodeURIComponent(rank.tag + ' ' + rank.title)}&score=${displayScore}`;
 
       const fullShareMessage = 
 `📜 [조선 과거시험 급제 통보]
-나의 품계: [${rank.tag}] ${rank.title} (${score}점 달성)
+나의 품계: [${rank.tag}] ${rank.title} (최근 ${displayScore}점 / 누적 ${exp}문항 급제)
 
 "감히 내 관직을 넘볼 자가 있는가?"
 지금 바로 과거에 응시하여 실력을 겨뤄보아라!
