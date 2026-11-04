@@ -20,6 +20,9 @@
   <meta name="twitter:description" content="1분 만에 풀어보는 흥미진진 역사 상식 퀴즈!">
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1548115184-bc6544d06a58?q=80&w=800&auto=format&fit=crop">
 
+  <!-- [추후 구글 애드센스 승인용 스크립트 들어갈 자리] -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
   <style>
     * {
       box-sizing: border-box;
@@ -33,10 +36,37 @@
       background-color: #0f172a;
       color: #f8fafc;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 16px;
+    }
+
+    /* 애드센스 배너 컨테이너 */
+    .ad-container {
+      width: 100%;
+      max-width: 440px;
+      margin: 12px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* 승인 전 자리표시(Placeholder) 박스 */
+    .ad-placeholder {
+      width: 100%;
+      min-height: 80px;
+      border: 1px dashed #334155;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #64748b;
+      font-size: 13px;
+      background-color: rgba(30, 41, 59, 0.4);
+      letter-spacing: -0.3px;
     }
 
     .quiz-container {
@@ -197,6 +227,14 @@
 </head>
 <body>
 
+  <!-- [상단 배너 광고 영역] -->
+  <div class="ad-container" id="ad-top">
+    <div class="ad-placeholder">
+      광고 배너 영역 (상단)
+      <!-- 추후 애드센스 승인 시 이 자리에 ins 태그 삽입 -->
+    </div>
+  </div>
+
   <div class="quiz-container">
     <div id="quiz-area">
       <div class="top-bar">
@@ -228,6 +266,14 @@
       <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 20px;"></p>
       <button class="share-btn" onclick="shareQuiz()">카카오톡으로 친구에게 공유하기</button>
       <button class="next-btn" style="display:block; margin-top: 10px; background: #334155;" onclick="location.reload()">다시 풀기</button>
+    </div>
+  </div>
+
+  <!-- [하단 배너 광고 영역] -->
+  <div class="ad-container" id="ad-bottom">
+    <div class="ad-placeholder">
+      광고 배너 영역 (하단)
+      <!-- 추후 애드센스 승인 시 이 자리에 ins 태그 삽입 -->
     </div>
   </div>
 
