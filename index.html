@@ -230,7 +230,7 @@
       margin: 8px 0;
     }
 
-    /* 승진 시 펼쳐지는 어명 교지(敎旨) 두루마리 스타일 */
+    /* 승진 시 교지 두루마리 */
     .royal-edict {
       display: none;
       background: #fdf6e2;
@@ -290,6 +290,20 @@
       width: 100%;
       margin-top: 10px;
     }
+
+    .bonus-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -299,7 +313,7 @@
   </div>
 
   <div class="quiz-container">
-    <!-- 조선 품계 표시 헤더 (숫자 레벨은 완전 배제) -->
+    <!-- 조선 품계 표시 헤더 -->
     <div class="user-profile-bar">
       <div>
         <span class="rank-tag" id="user-rank-tag">신분</span>
@@ -310,7 +324,7 @@
 
     <div id="quiz-area">
       <div class="top-bar">
-        <span class="round-tag">오늘의 5문항</span>
+        <span class="round-tag" id="round-mode-tag">오늘의 과거시험 (1차)</span>
         <span class="progress-text" id="progress-text">1 / 5</span>
       </div>
 
@@ -330,8 +344,7 @@
 
     <!-- 결과 화면 -->
     <div class="result-box" id="result-box">
-      
-      <!-- 승격 시 열리는 교지(敎旨) 창 -->
+      <!-- 승격 교지 창 -->
       <div class="royal-edict" id="royal-edict">
         <div class="edict-header">敎 旨 (교 지)</div>
         <div class="edict-body" id="edict-text"></div>
@@ -343,8 +356,18 @@
       <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 10px;"></p>
       <p id="review-info" style="color: #38bdf8; font-size: 13px; margin-bottom: 14px;"></p>
       
+      <!-- 보너스 해금 버튼 (기본 1차 완료 시 나타남) -->
+      <div id="bonus-action-area" style="display: none;">
+        <button class="bonus-btn" onclick="triggerShareForBonus()">🎁 친구에게 공유하고 오늘 보너스 5문제 더 풀기!</button>
+      </div>
+
+      <!-- 보너스까지 모두 완료했을 때 표시 -->
+      <div id="daily-complete-area" style="display: none;">
+        <p style="color: #f59e0b; font-weight: 700; font-size: 14px; margin-bottom: 8px;">🌙 오늘의 모든 과거시험(총 10문항)을 마쳤습니다!</p>
+        <p style="color: #64748b; font-size: 12px; margin-bottom: 12px;">내일 자정에 새로운 과거시험 문제가 열립니다.</p>
+      </div>
+
       <button class="share-btn" onclick="shareQuiz()">카카오톡으로 내 벼슬 자랑하기</button>
-      <button class="next-btn" id="retry-btn" style="display:block; margin-top: 10px; background: #0284c7;" onclick="location.reload()">틀린 문제 복습 & 승진 도전</button>
     </div>
   </div>
 
@@ -356,9 +379,11 @@
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?output=csv";
     const QUIZ_COUNT = 5;
 
-    // 로컬 스토리지 키
+    // 로컬 스토리지 키 목록
     const STORAGE_SOLVED = "history_mastered_ids";
     const STORAGE_EXP = "history_user_exp";
+    const STORAGE_DAILY_DATE = "history_last_quiz_date";
+    const STORAGE_DAILY_STAGE = "history_daily_stage"; // 'base_done' 또는 'bonus_done'
 
     let quizData = [];
     let currentIdx = 0;
@@ -366,8 +391,8 @@
     let isAnswered = false;
     let totalQuestionsCount = 0;
     let initialExp = 0;
+    let currentPlayStage = 'base'; // 'base' (기본 5문제) or 'bonus' (보너스 5문제)
 
-    // 10단계 조선 품계 체계 (숫자 레벨은 완전히 숨김)
     const RANKS = [
       { minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)" },
       { minExp: 380, tag: "정1품", title: "영의정", duty: "일인지하 만인지상" },
@@ -382,6 +407,11 @@
       { minExp: 0,   tag: "백성", title: "초야의 백성", duty: "과거 준비생" }
     ];
 
+    function getTodayString() {
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    }
+
     function getRank(exp) {
       return RANKS.find(r => exp >= r.minExp) || RANKS[RANKS.length - 1];
     }
@@ -394,40 +424,33 @@
       document.getElementById('user-duty-text').innerText = rank.duty;
     }
 
-    // Web Audio API로 구현한 대취타 풍악 팡파르 효과음 (외부 파일 다운로드 없음)
     function playFanfareSound() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) return;
         const ctx = new AudioContext();
 
-        // 대취타 나발/태평소 풍악 화음 멜로디 (도 - 미 - 솔 - 높은도)
         const notes = [
-          { f: 261.63, start: 0.0, dur: 0.18 }, // 도
-          { f: 329.63, start: 0.2, dur: 0.18 }, // 미
-          { f: 392.00, start: 0.4, dur: 0.22 }, // 솔
-          { f: 523.25, start: 0.65, dur: 0.6 }  // 높은 도
+          { f: 261.63, start: 0.0, dur: 0.18 },
+          { f: 329.63, start: 0.2, dur: 0.18 },
+          { f: 392.00, start: 0.4, dur: 0.22 },
+          { f: 523.25, start: 0.65, dur: 0.6 }
         ];
 
         notes.forEach(n => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-          
-          osc.type = 'sawtooth'; // 풍악 특유의 쩌렁쩌렁한 브라스 음색
+          osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(n.f, ctx.currentTime + n.start);
-
           gain.gain.setValueAtTime(0.001, ctx.currentTime + n.start);
           gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + n.start + 0.05);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.start + n.dur);
-
           osc.connect(gain);
           gain.connect(ctx.destination);
-
           osc.start(ctx.currentTime + n.start);
           osc.stop(ctx.currentTime + n.start + n.dur);
         });
 
-        // 웅장한 궁중 북(고) 효과음
         const drumOsc = ctx.createOscillator();
         const drumGain = ctx.createGain();
         drumOsc.frequency.setValueAtTime(110, ctx.currentTime + 0.65);
@@ -438,9 +461,7 @@
         drumGain.connect(ctx.destination);
         drumOsc.start(ctx.currentTime + 0.65);
         drumOsc.stop(ctx.currentTime + 1.3);
-      } catch (e) {
-        // 오디오 차단 환경 예외 처리
-      }
+      } catch (e) {}
     }
 
     function parseCSV(text) {
@@ -481,6 +502,27 @@
     }
 
     async function fetchQuizFromSheet() {
+      const today = getTodayString();
+      const lastDate = localStorage.getItem(STORAGE_DAILY_DATE);
+      const stage = localStorage.getItem(STORAGE_DAILY_STAGE);
+
+      // 날짜가 바뀌었으면 일일 진행 상태 리셋
+      if (lastDate !== today) {
+        localStorage.setItem(STORAGE_DAILY_DATE, today);
+        localStorage.setItem(STORAGE_DAILY_STAGE, 'ready');
+        currentPlayStage = 'base';
+      } else {
+        // 이미 오늘 기본을 완료했고 보너스 차례인지 확인
+        if (stage === 'bonus_unlocked') {
+          currentPlayStage = 'bonus';
+          document.getElementById('round-mode-tag').innerText = "보너스 특별시험 (2차)";
+        } else if (stage === 'base_done' || stage === 'bonus_done') {
+          // 이미 오늘 퀴즈를 완료한 상태에서 재접속 시 바로 결과창으로 유도
+          showAlreadyDoneScreen(stage);
+          return;
+        }
+      }
+
       initialExp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       updateProfileUI();
 
@@ -516,13 +558,9 @@
         totalQuestionsCount = allQuestions.length;
         if (totalQuestionsCount === 0) throw new Error("문제 없음");
 
-        // 맞혀서 졸업한 문제 목록 확인
         const mastered = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]");
-        
-        // 아직 못 맞힌 문제 (틀렸던 문제 + 새 문제)
         let pool = allQuestions.filter(q => !mastered.includes(q.id));
 
-        // 전체 문제를 모두 정복했을 경우 리셋
         if (pool.length === 0) {
           localStorage.removeItem(STORAGE_SOLVED);
           pool = allQuestions;
@@ -535,6 +573,25 @@
       } catch (err) {
         document.getElementById('category-title').innerText = "안내";
         document.getElementById('question-title').innerText = "문제를 불러오는 중입니다. 잠시 후 다시 접속해 주세요.";
+      }
+    }
+
+    function showAlreadyDoneScreen(stage) {
+      updateProfileUI();
+      document.getElementById('quiz-area').style.display = 'none';
+      const resultBox = document.getElementById('result-box');
+      resultBox.style.display = 'block';
+
+      document.getElementById('final-score').innerText = "완료";
+      document.getElementById('result-comment').innerText = "오늘 준비된 과거시험을 이미 치르셨습니다!";
+      
+      const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
+      document.getElementById('review-info').innerText = `💡 총 누적 통과: ${masteredCount}문항`;
+
+      if (stage === 'base_done') {
+        document.getElementById('bonus-action-area').style.display = 'block';
+      } else {
+        document.getElementById('daily-complete-area').style.display = 'block';
       }
     }
 
@@ -571,7 +628,6 @@
       const pointPerQuestion = Math.round(100 / quizData.length);
 
       if (selectedIndex === data.answer) {
-        // [정답] 맞힌 문제는 영구 졸업 + 벼슬 경험치 누적
         btnElement.classList.add('correct');
         score += pointPerQuestion;
 
@@ -584,7 +640,6 @@
         let exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
         localStorage.setItem(STORAGE_EXP, exp + 1);
       } else {
-        // [오답] 맞히지 못했으므로 졸업하지 않고 다음 판에 다시 등장
         btnElement.classList.add('wrong');
         buttons[data.answer].classList.add('correct');
       }
@@ -621,7 +676,6 @@
       const oldRank = getRank(initialExp);
       const newRank = getRank(currentExp);
 
-      // 신분/품계 승급 시 교지 하사식 & 대취타 풍악 재생
       if (newRank.title !== oldRank.title) {
         playFanfareSound();
         const edictBox = document.getElementById('royal-edict');
@@ -633,15 +687,51 @@
       let comment = "";
       if (score === 100) comment = "장원급제입니다! 틀린 문제 없이 완벽하게 통과하셨습니다.";
       else if (score >= 60) comment = "선방하셨습니다! 틀린 문제는 다음 판에 복습 문제로 다시 출제됩니다.";
-      else comment = "낙방의 고배를 마셨군요. 다시 도전하여 품계를 높여보세요!";
+      else comment = "낙방의 고배를 마셨군요. 내일 다시 도전하여 품계를 높여보세요!";
 
       document.getElementById('result-comment').innerText = comment;
 
       const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
       document.getElementById('review-info').innerText = `💡 총 ${totalQuestionsCount}문제 중 ${masteredCount}문제를 완전 통과하셨습니다.`;
 
-      if (masteredCount >= totalQuestionsCount) {
-        document.getElementById('retry-btn').innerText = "전체 문제 완전 정복! (처음부터 다시 도전)";
+      // 당일 단계 완료 처리
+      if (currentPlayStage === 'base') {
+        localStorage.setItem(STORAGE_DAILY_STAGE, 'base_done');
+        document.getElementById('bonus-action-area').style.display = 'block';
+      } else {
+        localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_done');
+        document.getElementById('daily-complete-area').style.display = 'block';
+      }
+    }
+
+    // [핵심] 친구에게 공유 완료 시 보너스 5문제 해금 로직
+    function triggerShareForBonus() {
+      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
+      const rank = getRank(exp);
+      const shareData = {
+        title: '오늘의 역사 1분 퀴즈',
+        text: `[조선 과거시험] 나의 품계는 '${rank.tag} ${rank.title}'! 보너스 시험에 도전해보세요!`,
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData)
+          .then(() => {
+            // 공유 성공 신호 감지 -> 보너스 해금 후 즉시 재시작
+            localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
+            alert('🎉 공유가 완료되어 오늘의 보너스 5문제가 해금되었습니다!');
+            location.reload();
+          })
+          .catch((err) => {
+            // 공유 취소 시 패스
+          });
+      } else {
+        // PC 또는 인앱 브라우저 대체 처리 (링크 복사 완료 시 해금)
+        navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`).then(() => {
+          localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
+          alert('🎉 퀴즈 링크가 복사되었습니다! 카카오톡에 공유하고 확인을 누르면 보너스 5문제가 열립니다.');
+          location.reload();
+        });
       }
     }
 
