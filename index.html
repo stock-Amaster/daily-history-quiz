@@ -295,6 +295,96 @@
       margin-top: 4px;
     }
 
+    /* 조선 8도 관할 미니맵 스타일 */
+    .joseon-map-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 14px;
+      margin: 14px 0;
+      text-align: center;
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .map-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-conquered-status {
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: #1e293b;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .map-svg-wrap {
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .province-path {
+      fill: #1e293b;
+      stroke: #334155;
+      stroke-width: 1.5;
+      transition: all 0.4s ease;
+    }
+
+    .province-path.conquered {
+      fill: #0284c7;
+      stroke: #38bdf8;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
+    }
+
+    .province-path.capital {
+      fill: #d97706 !important;
+      stroke: #fbbf24 !important;
+    }
+
+    .province-label {
+      font-size: 10px;
+      font-weight: 800;
+      fill: #64748b;
+      pointer-events: none;
+      transition: all 0.3s;
+    }
+
+    .province-label.conquered {
+      fill: #ffffff;
+    }
+
+    .flag-icon {
+      display: none;
+      font-size: 13px;
+    }
+
+    .flag-icon.active {
+      display: block;
+      animation: flagPop 0.4s ease-out;
+    }
+
+    @keyframes flagPop {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
     .share-btn {
       background-color: #fee500;
       color: #191919;
@@ -375,8 +465,52 @@
 
       <h2 style="font-size: 19px; font-weight: 700;">이번 시험 채점 결과</h2>
       <div class="result-score" id="final-score">0점</div>
-      <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 10px;"></p>
-      <p id="review-info" style="color: #38bdf8; font-size: 13px; line-height: 1.5; margin-bottom: 14px;"></p>
+      <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 8px;"></p>
+      <p id="review-info" style="color: #38bdf8; font-size: 13px; line-height: 1.5; margin-bottom: 12px;"></p>
+
+      <!-- [하이브리드 시각화] 조선 8도 관할 미니맵 카드 -->
+      <div class="joseon-map-card">
+        <div class="map-header">
+          <div class="map-title">🗺️ 조선 8도 관할령 영토도</div>
+          <div class="map-conquered-status" id="map-status-text">0/8도 장악</div>
+        </div>
+        <div class="map-svg-wrap">
+          <svg viewBox="0 0 240 320" width="100%" height="240" xmlns="http://www.w3.org/2000/svg">
+            <!-- 함경도 (ID: p-hamgyong) -->
+            <path id="p-hamgyong" class="province-path" d="M115,20 L185,15 L220,60 L195,110 L150,95 L125,75 Z" />
+            <text id="t-hamgyong" x="165" y="65" class="province-label" text-anchor="middle">함경도</text>
+
+            <!-- 평안도 (ID: p-pyongan) -->
+            <path id="p-pyongan" class="province-path" d="M40,70 L115,55 L125,75 L110,125 L45,115 Z" />
+            <text id="t-pyongan" x="78" y="95" class="province-label" text-anchor="middle">평안도</text>
+
+            <!-- 황해도 (ID: p-hwanghae) -->
+            <path id="p-hwanghae" class="province-path" d="M45,120 L110,125 L105,160 L40,155 Z" />
+            <text id="t-hwanghae" x="75" y="145" class="province-label" text-anchor="middle">황해도</text>
+
+            <!-- 강원도 (ID: p-gangwon) -->
+            <path id="p-gangwon" class="province-path" d="M110,125 L150,95 L195,110 L180,180 L120,175 Z" />
+            <text id="t-gangwon" x="145" y="145" class="province-label" text-anchor="middle">강원도</text>
+
+            <!-- 경기도 (한양) (ID: p-gyeonggi) -->
+            <path id="p-gyeonggi" class="province-path" d="M60,160 L105,160 L118,175 L110,210 L65,205 Z" />
+            <text id="t-gyeonggi" x="88" y="185" class="province-label" text-anchor="middle">경기(한양)</text>
+
+            <!-- 충청도 (ID: p-chungcheong) -->
+            <path id="p-chungcheong" class="province-path" d="M65,210 L110,210 L125,215 L115,245 L60,240 Z" />
+            <text id="t-chungcheong" x="88" y="230" class="province-label" text-anchor="middle">충청도</text>
+
+            <!-- 경상도 (ID: p-gyeongsang) -->
+            <path id="p-gyeongsang" class="province-path" d="M125,185 L180,185 L190,265 L135,285 L120,245 Z" />
+            <text id="t-gyeongsang" x="155" y="240" class="province-label" text-anchor="middle">경상도</text>
+
+            <!-- 전라도 (ID: p-jeolla) -->
+            <path id="p-jeolla" class="province-path" d="M55,245 L115,245 L125,275 L95,305 L45,295 Z" />
+            <text id="t-jeolla" x="85" y="278" class="province-label" text-anchor="middle">전라도</text>
+          </svg>
+        </div>
+        <p id="map-assigned-text" style="font-size: 12px; color: #94a3b8; margin-top: 8px;">현재 부임지: 과거를 치러 영토 관할권을 얻으십시오.</p>
+      </div>
       
       <!-- 보너스 해금 버튼 -->
       <div id="bonus-action-area" style="display: none;">
@@ -415,18 +549,19 @@
     let initialExp = 0;
     let currentPlayStage = 'base';
 
+    // 품계별 관할 영토 매핑 정의
     const RANKS = [
-      { id: 10, minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)" },
-      { id: 9,  minExp: 380, tag: "정1품", title: "영의정", duty: "일인지하 만인지상" },
-      { id: 8,  minExp: 270, tag: "정2품", title: "이조판서", duty: "조정의 으뜸 대신" },
-      { id: 7,  minExp: 190, tag: "정3품", title: "당상관 목사", duty: "붉은 단령 착용" },
-      { id: 6,  minExp: 130, tag: "종4품", title: "나주 군수", duty: "고을의 목민관 사또" },
-      { id: 5,  minExp: 85,  tag: "종6품", title: "지평 / 훈도", duty: "중견 실무 관원" },
-      { id: 4,  minExp: 50,  tag: "종7품", title: "규장각 박사", duty: "정식 관복 착용" },
-      { id: 3,  minExp: 25,  tag: "종9품", title: "권지 (실습관)", duty: "첫 관직 등청" },
-      { id: 2,  minExp: 10,  tag: "유생", title: "성균관 진사", duty: "소과 급제 한양 입성" },
-      { id: 1,  minExp: 3,   tag: "유생", title: "서당 훈도생", duty: "천자문 완독" },
-      { id: 0,  minExp: 0,   tag: "백성", title: "초야의 백성", duty: "과거 준비생" }
+      { id: 10, minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan','hamgyong'], capital: 'gyeonggi', desc: "팔도강산 완전 통치" },
+      { id: 9,  minExp: 380, tag: "정1품", title: "영의정", duty: "일인지하 만인지상", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan'], capital: 'gyeonggi', desc: "7도 행정 총괄" },
+      { id: 8,  minExp: 270, tag: "정2품", title: "이조판서", duty: "조정의 으뜸 대신", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae'], capital: 'gyeonggi', desc: "중원 6도 관할" },
+      { id: 7,  minExp: 190, tag: "정3품", title: "당상관 목사", duty: "붉은 단령 착용", territories: ['gyeonggi','chungcheong','jeolla','gyeongsang'], capital: 'gyeongsang', desc: "남부 삼남 및 경기 관할" },
+      { id: 6,  minExp: 130, tag: "종4품", title: "나주 군수", duty: "고을의 목민관 사또", territories: ['gyeonggi','chungcheong','jeolla'], capital: 'jeolla', desc: "호남 나주목 관할" },
+      { id: 5,  minExp: 85,  tag: "종6품", title: "지평 / 훈도", duty: "중견 실무 관원", territories: ['gyeonggi','chungcheong'], capital: 'chungcheong', desc: "호서 관할" },
+      { id: 4,  minExp: 50,  tag: "종7품", title: "규장각 박사", duty: "정식 관복 착용", territories: ['gyeonggi','gangwon'], capital: 'gangwon', desc: "경기·강원 관할" },
+      { id: 3,  minExp: 25,  tag: "종9품", title: "권지 (실습관)", duty: "첫 관직 등청", territories: ['gyeonggi'], capital: 'gyeonggi', desc: "한양 조정 등청" },
+      { id: 2,  minExp: 10,  tag: "유생", title: "성균관 진사", duty: "소과 급제 한양 입성", territories: ['gyeonggi'], capital: 'gyeonggi', desc: "한양 성균관 유학" },
+      { id: 1,  minExp: 3,   tag: "유생", title: "서당 훈도생", duty: "천자문 완독", territories: [], capital: null, desc: "과거 공부 중" },
+      { id: 0,  minExp: 0,   tag: "백성", title: "초야의 백성", duty: "과거 준비생", territories: [], capital: null, desc: "미개척 안개 상태" }
     ];
 
     function getTodayString() {
@@ -450,6 +585,33 @@
       document.getElementById('user-duty-text').innerText = rank.duty;
     }
 
+    // [하이브리드 시각화] 품계에 따른 조선 8도 렌더링
+    function renderJoseonMap(rank) {
+      const allTerritories = ['hamgyong', 'pyongan', 'hwanghae', 'gangwon', 'gyeonggi', 'chungcheong', 'gyeongsang', 'jeolla'];
+      
+      // 초기화
+      allTerritories.forEach(t => {
+        const path = document.getElementById(`p-${t}`);
+        const text = document.getElementById(`t-${t}`);
+        if (path) path.className.baseVal = "province-path";
+        if (text) text.className.baseVal = "province-label";
+      });
+
+      // 점령된 영토에 불 켜기
+      rank.territories.forEach(t => {
+        const path = document.getElementById(`p-${t}`);
+        const text = document.getElementById(`t-${t}`);
+        if (path) {
+          path.classList.add('conquered');
+          if (t === rank.capital) path.classList.add('capital');
+        }
+        if (text) text.classList.add('conquered');
+      });
+
+      document.getElementById('map-status-text').innerText = `${rank.territories.length}/8도 장악`;
+      document.getElementById('map-assigned-text').innerHTML = `📍 <strong>현재 관할권:</strong> [${rank.title}] ${rank.desc}`;
+    }
+
     function checkInvitedChallenge() {
       const params = new URLSearchParams(window.location.search);
       const rankId = params.get('r');
@@ -459,7 +621,7 @@
         const challenger = getRankById(rankId);
         const scoreText = (challengerScore && challengerScore !== "0") ? `${challengerScore}점` : '우수한 성적';
         const banner = document.getElementById('challenge-banner');
-        banner.innerHTML = `⚔️ <strong>[${challenger.tag} ${challenger.title}]</strong>의 도전장이 도착했습니다!<br>그의 점수(${scoreText})를 꺾고 더 높은 관직에 오르십시오!`;
+        banner.innerHTML = `⚔️ <strong>[${challenger.tag} ${challenger.title}]</strong>의 도전장이 도착했습니다!<br>그의 점수(${scoreText})를 꺾고 더 넓은 영토를 평정하십시오!`;
         banner.style.display = 'block';
       }
     }
@@ -621,6 +783,10 @@
       const resultBox = document.getElementById('result-box');
       resultBox.style.display = 'block';
 
+      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
+      const currentRank = getRank(exp);
+      renderJoseonMap(currentRank);
+
       const savedScore = localStorage.getItem(STORAGE_LAST_SCORE);
       document.getElementById('final-score').innerText = (savedScore && savedScore !== "0") ? `${savedScore}점` : "통과";
       document.getElementById('result-comment').innerText = "오늘 준비된 과거시험을 이미 치르셨습니다!";
@@ -711,19 +877,20 @@
 
       if (score > 100) score = 100;
       document.getElementById('final-score').innerText = `${score}점`;
-
-      // 획득한 시험 점수를 로컬 스토리지에 확실하게 보관
       localStorage.setItem(STORAGE_LAST_SCORE, score.toString());
 
       const currentExp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const oldRank = getRank(initialExp);
       const newRank = getRank(currentExp);
 
+      // 미니 지도 렌더링
+      renderJoseonMap(newRank);
+
       if (newRank.title !== oldRank.title) {
         playFanfareSound();
         const edictBox = document.getElementById('royal-edict');
         const edictText = document.getElementById('edict-text');
-        edictText.innerHTML = `수험생은 역사 상식에 통달하였으므로,<br>이에 <strong>[${newRank.tag}] ${newRank.title}</strong>에 제수(除授)하노라!`;
+        edictText.innerHTML = `수험생은 역사 상식에 통달하였으므로,<br>이에 <strong>[${newRank.tag}] ${newRank.title}</strong>에 제수(除授)하며<br><strong>[${newRank.desc}]</strong>의 영토 권한을 부여하노라!`;
         edictBox.style.display = 'block';
       }
 
@@ -750,7 +917,7 @@
       const saved = localStorage.getItem(STORAGE_LAST_SCORE);
       if (saved && parseInt(saved, 10) > 0) return parseInt(saved, 10);
       if (score > 0) return score;
-      return 100; // 과거 합격 기본값 방어
+      return 100;
     }
 
     function triggerShareForBonus() {
@@ -762,9 +929,10 @@
       const shareText = 
 `📜 [조선 과거시험 보너스 초대]
 나의 품계: [${rank.tag}] ${rank.title} (${displayScore}점 달성)
+영토 장악: 조선 8도 중 ${rank.territories.length}도 평정!
 
-"내가 오늘 거둔 성적을 넘볼 자가 있는가?"
-지금 도전하여 당신의 조선 관직을 확인해보라!
+"내가 오늘 거둔 성적과 관할지를 넘볼 자가 있는가?"
+지금 도전하여 당신의 조선 관직과 영토를 확인하라!
 
 👉 과거시험 치러 가기:
 ${challengeUrl}`;
@@ -784,7 +952,7 @@ ${challengeUrl}`;
       } else {
         navigator.clipboard.writeText(shareText).then(() => {
           localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
-          alert('🎉 내 품계가 담긴 퀴즈 링크가 복사되었습니다!\n카카오톡 대화방에 붙여넣어 공유를 완료하면 보너스 5문제가 열립니다.');
+          alert('🎉 내 품계와 영토 기록이 담긴 링크가 복사되었습니다!\n카카오톡 대화방에 붙여넣어 공유를 완료하면 보너스 5문제가 열립니다.');
           location.reload();
         });
       }
@@ -799,9 +967,10 @@ ${challengeUrl}`;
       const fullShareMessage = 
 `📜 [조선 과거시험 급제 통보]
 나의 품계: [${rank.tag}] ${rank.title} (${displayScore}점 / 누적 ${exp}문항 급제)
+관할 영토: 8도 중 [${rank.territories.length}도 평정] (${rank.desc})
 
-"감히 내 관직을 넘볼 자가 있는가?"
-지금 바로 과거에 응시하여 실력을 겨뤄보아라!
+"감히 내 관직과 영토를 넘볼 자가 있는가?"
+지금 바로 과거에 응시하여 나와 겨뤄보아라!
 
 👇 과거시험 응시하기
 ${challengeUrl}`;
@@ -814,7 +983,7 @@ ${challengeUrl}`;
         }).catch(() => {});
       } else {
         navigator.clipboard.writeText(fullShareMessage).then(() => {
-          alert(`🎉 [${rank.title}] 품계 자랑 문구가 복사되었습니다!\n카카오톡 대화방에 [붙여넣기] 하시면 관직이 멋지게 전송됩니다.`);
+          alert(`🎉 [${rank.title}] 품계 및 영토 자랑 문구가 복사되었습니다!\n카카오톡 대화방에 [붙여넣기] 하시면 멋지게 전송됩니다.`);
         });
       }
     }
