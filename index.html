@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>오늘의 역사 1분 퀴즈 | 조선 과거시험</title>
 
-  <!-- 카카오톡 / SNS 공유용 메타태그 (Open Graph) -->
+  <!-- 카카오톡 / SNS 공유용 기본 메타태그 (Open Graph) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stock-amaster.github.io/daily-history-quiz/">
   <meta property="og:title" content="오늘의 역사 1분 퀴즈 | 나의 조선 벼슬은 몇 품일까?">
@@ -21,6 +21,8 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Pretendard", sans-serif;
       -webkit-tap-highlight-color: transparent;
+      word-break: keep-all; /* 한 글자만 어색하게 줄바꿈되는 현상 방지 */
+      overflow-wrap: break-word;
     }
 
     body {
@@ -70,6 +72,20 @@
       position: relative;
     }
 
+    /* 도전자 알림 배너 (친구 초대 링크로 들어왔을 때 노출) */
+    .challenge-banner {
+      display: none;
+      background: linear-gradient(135deg, #7c2d12, #451a03);
+      border: 1px solid #ea580c;
+      color: #fed7aa;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.45;
+    }
+
     /* 상단 관직 품계 뱃지 바 */
     .user-profile-bar {
       display: flex;
@@ -89,6 +105,7 @@
       padding: 4px 10px;
       border-radius: 9999px;
       letter-spacing: -0.2px;
+      display: inline-block;
     }
 
     .user-title {
@@ -147,7 +164,7 @@
     .question-title {
       font-size: 18px;
       font-weight: 700;
-      line-height: 1.5;
+      line-height: 1.55;
       color: #f1f5f9;
       margin-top: 4px;
     }
@@ -168,7 +185,7 @@
       font-weight: 600;
       text-align: left;
       cursor: pointer;
-      line-height: 1.4;
+      line-height: 1.45;
       transition: all 0.2s;
     }
 
@@ -199,7 +216,7 @@
       border-radius: 12px;
       padding: 14px;
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
       color: #cbd5e1;
     }
 
@@ -285,10 +302,11 @@
       padding: 14px;
       border-radius: 12px;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       width: 100%;
       margin-top: 10px;
+      line-height: 1.4;
     }
 
     .bonus-btn {
@@ -302,6 +320,7 @@
       cursor: pointer;
       width: 100%;
       margin-top: 10px;
+      line-height: 1.45;
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
   </style>
@@ -313,6 +332,9 @@
   </div>
 
   <div class="quiz-container">
+    <!-- 친구의 도전을 받고 들어왔을 때 나타나는 깃발 배너 -->
+    <div class="challenge-banner" id="challenge-banner"></div>
+
     <!-- 조선 품계 표시 헤더 -->
     <div class="user-profile-bar">
       <div>
@@ -353,21 +375,21 @@
 
       <h2 style="font-size: 19px; font-weight: 700;">이번 시험 채점 결과</h2>
       <div class="result-score" id="final-score">0점</div>
-      <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 10px;"></p>
-      <p id="review-info" style="color: #38bdf8; font-size: 13px; margin-bottom: 14px;"></p>
+      <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 10px;"></p>
+      <p id="review-info" style="color: #38bdf8; font-size: 13px; line-height: 1.5; margin-bottom: 14px;"></p>
       
-      <!-- 보너스 해금 버튼 (기본 1차 완료 시 나타남) -->
+      <!-- 보너스 해금 버튼 (기본 1차 5문제 완료 시 표시) -->
       <div id="bonus-action-area" style="display: none;">
-        <button class="bonus-btn" onclick="triggerShareForBonus()">🎁 친구에게 공유하고 오늘 보너스 5문제 더 풀기!</button>
+        <button class="bonus-btn" onclick="triggerShareForBonus()">🎁 친구에게 공유하고<br>오늘 보너스 5문제 더 풀기!</button>
       </div>
 
-      <!-- 보너스까지 모두 완료했을 때 표시 -->
+      <!-- 보너스 5문제까지 총 10문항 모두 완료 시 표시 -->
       <div id="daily-complete-area" style="display: none;">
-        <p style="color: #f59e0b; font-weight: 700; font-size: 14px; margin-bottom: 8px;">🌙 오늘의 모든 과거시험(총 10문항)을 마쳤습니다!</p>
-        <p style="color: #64748b; font-size: 12px; margin-bottom: 12px;">내일 자정에 새로운 과거시험 문제가 열립니다.</p>
+        <p style="color: #f59e0b; font-weight: 700; font-size: 14px; margin-bottom: 8px;">🌙 오늘의 모든 과거시험(총 10문항) 완료!</p>
+        <p style="color: #64748b; font-size: 13px; margin-bottom: 12px; line-height: 1.5;">오늘 밤 12시(자정)에 새로운 과거시험이 열립니다!</p>
       </div>
 
-      <button class="share-btn" onclick="shareQuiz()">카카오톡으로 내 벼슬 자랑하기</button>
+      <button class="share-btn" onclick="shareQuiz()">📜 카카오톡으로 내 벼슬 자랑하기</button>
     </div>
   </div>
 
@@ -379,11 +401,10 @@
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?output=csv";
     const QUIZ_COUNT = 5;
 
-    // 로컬 스토리지 키 목록
     const STORAGE_SOLVED = "history_mastered_ids";
     const STORAGE_EXP = "history_user_exp";
     const STORAGE_DAILY_DATE = "history_last_quiz_date";
-    const STORAGE_DAILY_STAGE = "history_daily_stage"; // 'base_done' 또는 'bonus_done'
+    const STORAGE_DAILY_STAGE = "history_daily_stage";
 
     let quizData = [];
     let currentIdx = 0;
@@ -391,7 +412,7 @@
     let isAnswered = false;
     let totalQuestionsCount = 0;
     let initialExp = 0;
-    let currentPlayStage = 'base'; // 'base' (기본 5문제) or 'bonus' (보너스 5문제)
+    let currentPlayStage = 'base';
 
     const RANKS = [
       { minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)" },
@@ -422,6 +443,19 @@
       document.getElementById('user-rank-tag').innerText = rank.tag;
       document.getElementById('user-title').innerText = rank.title;
       document.getElementById('user-duty-text').innerText = rank.duty;
+    }
+
+    // URL에 친구의 초대 정보가 묻어있을 때 배너 표시
+    function checkInvitedChallenge() {
+      const params = new URLSearchParams(window.location.search);
+      const challengerRank = params.get('challenger_rank');
+      const challengerScore = params.get('score');
+
+      if (challengerRank) {
+        const banner = document.getElementById('challenge-banner');
+        banner.innerHTML = `⚔️ <strong>[${challengerRank}]</strong>의 도전장이 도착했습니다!<br>그의 점수(${challengerScore ? challengerScore + '점' : '기록'})를 꺾고 더 높은 관직에 오르십시오!`;
+        banner.style.display = 'block';
+      }
     }
 
     function playFanfareSound() {
@@ -502,22 +536,21 @@
     }
 
     async function fetchQuizFromSheet() {
+      checkInvitedChallenge();
+
       const today = getTodayString();
       const lastDate = localStorage.getItem(STORAGE_DAILY_DATE);
       const stage = localStorage.getItem(STORAGE_DAILY_STAGE);
 
-      // 날짜가 바뀌었으면 일일 진행 상태 리셋
       if (lastDate !== today) {
         localStorage.setItem(STORAGE_DAILY_DATE, today);
         localStorage.setItem(STORAGE_DAILY_STAGE, 'ready');
         currentPlayStage = 'base';
       } else {
-        // 이미 오늘 기본을 완료했고 보너스 차례인지 확인
         if (stage === 'bonus_unlocked') {
           currentPlayStage = 'bonus';
           document.getElementById('round-mode-tag').innerText = "보너스 특별시험 (2차)";
         } else if (stage === 'base_done' || stage === 'bonus_done') {
-          // 이미 오늘 퀴즈를 완료한 상태에서 재접속 시 바로 결과창으로 유도
           showAlreadyDoneScreen(stage);
           return;
         }
@@ -586,7 +619,7 @@
       document.getElementById('result-comment').innerText = "오늘 준비된 과거시험을 이미 치르셨습니다!";
       
       const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
-      document.getElementById('review-info').innerText = `💡 총 누적 통과: ${masteredCount}문항`;
+      document.getElementById('review-info').innerHTML = `💡 총 누적 통과: <strong>${masteredCount}문항</strong>`;
 
       if (stage === 'base_done') {
         document.getElementById('bonus-action-area').style.display = 'block';
@@ -692,9 +725,8 @@
       document.getElementById('result-comment').innerText = comment;
 
       const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
-      document.getElementById('review-info').innerText = `💡 총 ${totalQuestionsCount}문제 중 ${masteredCount}문제를 완전 통과하셨습니다.`;
+      document.getElementById('review-info').innerHTML = `💡 총 ${totalQuestionsCount}문제 중 <strong>${masteredCount}문제를 완전 통과</strong>하셨습니다.`;
 
-      // 당일 단계 완료 처리
       if (currentPlayStage === 'base') {
         localStorage.setItem(STORAGE_DAILY_STAGE, 'base_done');
         document.getElementById('bonus-action-area').style.display = 'block';
@@ -704,51 +736,68 @@
       }
     }
 
-    // [핵심] 친구에게 공유 완료 시 보너스 5문제 해금 로직
     function triggerShareForBonus() {
       const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const rank = getRank(exp);
-      const shareData = {
-        title: '오늘의 역사 1분 퀴즈',
-        text: `[조선 과거시험] 나의 품계는 '${rank.tag} ${rank.title}'! 보너스 시험에 도전해보세요!`,
-        url: window.location.href
-      };
+      const challengeUrl = `${window.location.origin}${window.location.pathname}?challenger_rank=${encodeURIComponent(rank.tag + ' ' + rank.title)}&score=${score}`;
+      
+      const shareText = 
+`📜 [조선 과거시험 보너스 초대]
+나의 품계: [${rank.tag}] ${rank.title} (${score}점 달성)
 
-      if (navigator.share) {
-        navigator.share(shareData)
-          .then(() => {
-            // 공유 성공 신호 감지 -> 보너스 해금 후 즉시 재시작
-            localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
-            alert('🎉 공유가 완료되어 오늘의 보너스 5문제가 해금되었습니다!');
-            location.reload();
-          })
-          .catch((err) => {
-            // 공유 취소 시 패스
-          });
-      } else {
-        // PC 또는 인앱 브라우저 대체 처리 (링크 복사 완료 시 해금)
-        navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`).then(() => {
-          localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
-          alert('🎉 퀴즈 링크가 복사되었습니다! 카카오톡에 공유하고 확인을 누르면 보너스 5문제가 열립니다.');
-          location.reload();
-        });
-      }
-    }
+"내가 오늘 과거시험에서 거둔 성적을 넘볼 자가 있는가?"
+지금 도전하여 당신의 조선 관직을 확인해보라!
 
-    function shareQuiz() {
-      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-      const rank = getRank(exp);
-      const shareText = `[조선 과거시험 퀴즈] 나의 품계는 '${rank.tag} ${rank.title}' (${score}점 달성)! 감히 내 관직을 넘볼 자 있는가?`;
+👉 과거시험 치러 가기:
+${challengeUrl}`;
 
       if (navigator.share) {
         navigator.share({
           title: '오늘의 역사 1분 퀴즈',
           text: shareText,
-          url: window.location.href
+          url: challengeUrl
+        })
+        .then(() => {
+          localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
+          alert('🎉 공유가 완료되어 오늘의 보너스 5문제가 해금되었습니다!');
+          location.reload();
+        })
+        .catch(() => {});
+      } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+          localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
+          alert('🎉 내 품계가 담긴 퀴즈 링크가 복사되었습니다!\n카카오톡 대화방에 붙여넣어 공유를 완료하면 보너스 5문제가 열립니다.');
+          location.reload();
+        });
+      }
+    }
+
+    // 내 실시간 품계와 도발 멘트를 카톡 말풍선 전체에 굵직하게 박아서 복사·공유
+    function shareQuiz() {
+      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
+      const rank = getRank(exp);
+      const challengeUrl = `${window.location.origin}${window.location.pathname}?challenger_rank=${encodeURIComponent(rank.tag + ' ' + rank.title)}&score=${score}`;
+
+      const fullShareMessage = 
+`📜 [조선 과거시험 급제 통보]
+나의 품계: [${rank.tag}] ${rank.title} (${score}점 달성)
+
+"감히 내 관직을 넘볼 자가 있는가?"
+지금 바로 과거에 응시하여 실력을 겨뤄보아라!
+
+👇 과거시험 응시하기
+${challengeUrl}`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: `[조선 과거시험] 나의 품계: ${rank.title}`,
+          text: fullShareMessage,
+          url: challengeUrl
         }).catch(() => {});
       } else {
-        navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-        alert('내 품계와 퀴즈 링크가 복사되었습니다! 카카오톡에 붙여넣어 친구들에게 자랑해보세요.');
+        navigator.clipboard.writeText(fullShareMessage).then(() => {
+          alert(`🎉 [${rank.title}] 품계 자랑 문구가 복사되었습니다!\n카카오톡 대화방에 [붙여넣기] 하시면 관직이 멋지게 전송됩니다.`);
+        });
       }
     }
 
