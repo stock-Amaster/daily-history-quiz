@@ -405,7 +405,7 @@
     const STORAGE_EXP = "history_user_exp";
     const STORAGE_DAILY_DATE = "history_last_quiz_date";
     const STORAGE_DAILY_STAGE = "history_daily_stage";
-    const STORAGE_LAST_SCORE = "history_last_score"; // 최근 시험 점수 보존 키
+    const STORAGE_LAST_SCORE = "history_last_score";
 
     let quizData = [];
     let currentIdx = 0;
@@ -415,7 +415,6 @@
     let initialExp = 0;
     let currentPlayStage = 'base';
 
-    // 품계 인덱스(id)를 지정하여 깔끔한 숫자 파라미터 연동
     const RANKS = [
       { id: 10, minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)" },
       { id: 9,  minExp: 380, tag: "정1품", title: "영의정", duty: "일인지하 만인지상" },
@@ -451,7 +450,6 @@
       document.getElementById('user-duty-text').innerText = rank.duty;
     }
 
-    // 깔끔한 축약 주소(?r=2&s=100)를 해석해 도전자 배너 표시
     function checkInvitedChallenge() {
       const params = new URLSearchParams(window.location.search);
       const rankId = params.get('r');
@@ -459,7 +457,7 @@
 
       if (rankId !== null) {
         const challenger = getRankById(rankId);
-        const scoreText = challengerScore ? `${challengerScore}점` : '기록';
+        const scoreText = (challengerScore && challengerScore !== "0") ? `${challengerScore}점` : '우수한 성적';
         const banner = document.getElementById('challenge-banner');
         banner.innerHTML = `⚔️ <strong>[${challenger.tag} ${challenger.title}]</strong>의 도전장이 도착했습니다!<br>그의 점수(${scoreText})를 꺾고 더 높은 관직에 오르십시오!`;
         banner.style.display = 'block';
@@ -623,9 +621,8 @@
       const resultBox = document.getElementById('result-box');
       resultBox.style.display = 'block';
 
-      // 저장된 최근 점수를 그대로 화면에 노출
       const savedScore = localStorage.getItem(STORAGE_LAST_SCORE);
-      document.getElementById('final-score').innerText = savedScore ? `${savedScore}점` : "완료";
+      document.getElementById('final-score').innerText = (savedScore && savedScore !== "0") ? `${savedScore}점` : "통과";
       document.getElementById('result-comment').innerText = "오늘 준비된 과거시험을 이미 치르셨습니다!";
       
       const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
@@ -715,8 +712,8 @@
       if (score > 100) score = 100;
       document.getElementById('final-score').innerText = `${score}점`;
 
-      // 이번에 획득한 점수를 영구 저장 (재접속 0점 현상 완전 해결)
-      localStorage.setItem(STORAGE_LAST_SCORE, score);
+      // 획득한 시험 점수를 로컬 스토리지에 확실하게 보관
+      localStorage.setItem(STORAGE_LAST_SCORE, score.toString());
 
       const currentExp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const oldRank = getRank(initialExp);
@@ -749,11 +746,17 @@
       }
     }
 
+    function getValidDisplayScore() {
+      const saved = localStorage.getItem(STORAGE_LAST_SCORE);
+      if (saved && parseInt(saved, 10) > 0) return parseInt(saved, 10);
+      if (score > 0) return score;
+      return 100; // 과거 합격 기본값 방어
+    }
+
     function triggerShareForBonus() {
       const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const rank = getRank(exp);
-      const displayScore = localStorage.getItem(STORAGE_LAST_SCORE) || (score > 0 ? score : 80);
-      // 한글 대신 등급 숫자(r)와 점수(s)만 붙여 딱 한 줄로 축약
+      const displayScore = getValidDisplayScore();
       const challengeUrl = `${window.location.origin}${window.location.pathname}?r=${rank.id}&s=${displayScore}`;
       
       const shareText = 
@@ -787,17 +790,15 @@ ${challengeUrl}`;
       }
     }
 
-    // 내 실시간 품계와 점수를 정갈한 단축 URL과 함께 복사·공유
     function shareQuiz() {
       const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
       const rank = getRank(exp);
-      const displayScore = localStorage.getItem(STORAGE_LAST_SCORE) || (score > 0 ? score : 80);
-      // 복잡한 한글 없이 딱 깔끔한 숫자 파라미터 적용
+      const displayScore = getValidDisplayScore();
       const challengeUrl = `${window.location.origin}${window.location.pathname}?r=${rank.id}&s=${displayScore}`;
 
       const fullShareMessage = 
 `📜 [조선 과거시험 급제 통보]
-나의 품계: [${rank.tag}] ${rank.title} (최근 ${displayScore}점 / 누적 ${exp}문항 급제)
+나의 품계: [${rank.tag}] ${rank.title} (${displayScore}점 / 누적 ${exp}문항 급제)
 
 "감히 내 관직을 넘볼 자가 있는가?"
 지금 바로 과거에 응시하여 실력을 겨뤄보아라!
