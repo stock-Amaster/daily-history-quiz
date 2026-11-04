@@ -14,6 +14,15 @@
   <meta property="og:image:width" content="800">
   <meta property="og:image:height" content="400">
 
+  <!-- 트위터 카드 메타태그 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="오늘의 역사 1분 퀴즈">
+  <meta name="twitter:description" content="1분 만에 풀어보는 흥미진진 역사 상식 퀴즈!">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1548115184-bc6544d06a58?q=80&w=800&auto=format&fit=crop">
+
+  <!-- [추후 구글 애드센스 승인 스크립트 들어갈 자리] -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
   <style>
     * {
       box-sizing: border-box;
@@ -232,7 +241,7 @@
 
       <div style="margin-top: 10px;">
         <div class="category-title" id="category-title">문제 불러오는 중...</div>
-        <div class="question-title" id="question-title">잠시만 기다려주세요.</div>
+        <div class="question-title" id="question-title">문제를 가져오고 있습니다. 잠시만 기다려주세요.</div>
       </div>
 
       <div class="options-group" id="options-group" style="margin-top: 16px;"></div>
@@ -240,13 +249,14 @@
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 풀기</button>
     </div>
 
+    <!-- 결과 화면 -->
     <div class="result-box" id="result-box">
-      <div class="badge" style="display:inline-block; margin-bottom: 8px;">퀴즈 완주!</div>
+      <div class="badge" style="display:inline-block; margin-bottom: 8px;">오늘의 퀴즈 완주!</div>
       <h2 style="font-size: 22px; font-weight: 700;">내 역사 상식 점수는?</h2>
       <div class="result-score" id="final-score">0점</div>
       <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 20px;"></p>
       <button class="share-btn" onclick="shareQuiz()">카카오톡으로 친구에게 공유하기</button>
-      <button class="next-btn" style="display:block; margin-top: 10px; background: #334155;" onclick="location.reload()">다시 풀기</button>
+      <button class="next-btn" style="display:block; margin-top: 10px; background: #334155;" onclick="location.reload()">새로운 문제 다시 풀기</button>
     </div>
   </div>
 
@@ -255,19 +265,103 @@
   </div>
 
   <script>
+    // 구글 스프레드시트 웹 게시 CSV 링크
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?output=csv";
+
+    // 1회 접속 시 풀 문제 수 (기본 5문제)
+    const QUIZ_COUNT = 5;
+
     let quizData = [];
     let currentIdx = 0;
     let score = 0;
     let isAnswered = false;
 
-    // questions.json 파일에서 문제를 자동으로 읽어옵니다.
-    async function loadQuizData() {
+    // CSV 파서 (쉼표와 따옴표가 섞인 긴 해설도 깨짐 없이 분리)
+    function parseCSV(text) {
+      const rows = [];
+      let currentRow = [];
+      let currentVal = '';
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (insideQuotes && nextChar === '"') {
+            currentVal += '"';
+            i++;
+          } else {
+            insideQuotes = !insideQuotes;
+          }
+        } else if (char === ',' && !insideQuotes) {
+          currentRow.push(currentVal.trim());
+          currentVal = '';
+        } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          currentRow.push(currentVal.trim());
+          if (currentRow.some(col => col.length > 0)) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          currentVal = '';
+        } else {
+          currentVal += char;
+        }
+      }
+      if (currentVal.length > 0 || currentRow.length > 0) {
+        currentRow.push(currentVal.trim());
+        if (currentRow.some(col => col.length > 0)) {
+          rows.push(currentRow);
+        }
+      }
+      return rows;
+    }
+
+    // 구글 시트에서 문제 실시간 로드
+    async function fetchQuizFromSheet() {
       try {
-        const response = await fetch('questions.json?v=' + Date.now());
-        quizData = await response.json();
+        const response = await fetch(SHEET_CSV_URL + '&t=' + Date.now());
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+
+        const allQuestions = [];
+        // 0행은 헤더(제목줄)이므로 1행부터 읽음
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          if (!row || row.length < 5) continue;
+
+          const category = row[0] || "역사 상식";
+          const question = row[1];
+          const opt1 = row[2];
+          const opt2 = row[3];
+          const answerNum = parseInt(row[4], 10);
+          const explanation = row[5] || "";
+
+          // 유효한 문제만 등록 (보기가 2개이고 정답이 1 또는 2인 경우)
+          if (question && opt1 && opt2 && (answerNum === 1 || answerNum === 2)) {
+            allQuestions.push({
+              category: category,
+              question: question,
+              options: [opt1, opt2],
+              answer: answerNum - 1, // 0-based index
+              explanation: explanation
+            });
+          }
+        }
+
+        if (allQuestions.length === 0) {
+          throw new Error("문제 데이터가 없습니다.");
+        }
+
+        // 전체 문제 중 무작위로 섞어서 QUIZ_COUNT(5개)만큼 선정
+        allQuestions.sort(() => Math.random() - 0.5);
+        quizData = allQuestions.slice(0, Math.min(QUIZ_COUNT, allQuestions.length));
+
         renderQuestion();
-      } catch (e) {
-        document.getElementById('question-title').innerText = "문제를 불러오는 데 실패했습니다.";
+      } catch (err) {
+        document.getElementById('category-title').innerText = "오류 발생";
+        document.getElementById('question-title').innerText = "문제를 불러오지 못했습니다. 잠시 후 다시 접속해 주세요.";
       }
     }
 
@@ -286,7 +380,7 @@
       data.options.forEach((optText, index) => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
-        btn.innerText = optText;
+        btn.innerText = `${index + 1}. ${optText}`;
         btn.onclick = () => selectOption(index, btn);
         optionsGroup.appendChild(btn);
       });
@@ -358,7 +452,7 @@
       }
     }
 
-    loadQuizData();
+    fetchQuizFromSheet();
   </script>
 </body>
 </html>
