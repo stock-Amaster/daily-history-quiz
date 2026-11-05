@@ -3,1112 +3,780 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오늘의 역사 1분 퀴즈 | 조선 과거시험</title>
-
-  <!-- 카카오톡 / SNS 공유용 메타태그 (Open Graph) -->
+  <title>조선 과거시험: 8도 영토 정복기</title>
+  
+  <!-- 카카오톡 & SNS 공유 오픈그래프 (OG 태그) -->
+  <meta property="og:title" content="조선 과거시험: 전국 8도 역사 정복전">
+  <meta property="og:description" content="상위 1%만 통과한다는 조선 과거시험! 당신의 역사 품계는 정1품 영의정일까?">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://stock-amaster.github.io/daily-history-quiz/">
-  <meta property="og:title" content="오늘의 역사 1분 퀴즈 | 나의 조선 벼슬은 몇 품일까?">
-  <meta property="og:description" content="세종대왕 수라상엔 정말 김치가 있었을까? 풀면서 품계가 오르는 반전 역사 퀴즈!">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1548115184-bc6544d06a58?q=80&w=800&auto=format&fit=crop">
-  <meta property="og:image:width" content="800">
-  <meta property="og:image:height" content="400">
 
   <style>
+    :root {
+      --bg-color: #f7f3e8;
+      --paper-color: #fffef9;
+      --ink-color: #2c251e;
+      --border-color: #8c7355;
+      --point-color: #b22222;
+      --gold-color: #d4af37;
+      --accent-color: #3f6844;
+      --font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Pretendard", sans-serif;
       -webkit-tap-highlight-color: transparent;
-      word-break: keep-all;
-      overflow-wrap: break-word;
     }
 
     body {
-      background-color: #0b1120;
-      color: #f8fafc;
+      background-color: var(--bg-color);
+      color: var(--ink-color);
+      font-family: var(--font-family);
+      line-height: 1.6;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 16px;
     }
 
-    .ad-container {
+    .container {
       width: 100%;
-      max-width: 440px;
-      margin: 8px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .ad-placeholder {
-      width: 100%;
-      min-height: 75px;
-      border: 1px dashed #334155;
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #64748b;
-      font-size: 13px;
-      background-color: rgba(30, 41, 59, 0.4);
-    }
-
-    .quiz-container {
-      background-color: #1e293b;
-      width: 100%;
-      max-width: 440px;
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      max-width: 520px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+    }
+
+    /* 상단 헤더 & 품계 뱃지 */
+    header {
+      background: var(--paper-color);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       position: relative;
     }
 
-    .challenge-banner {
-      display: none;
-      background: linear-gradient(135deg, #7c2d12, #451a03);
-      border: 1px solid #ea580c;
-      color: #fed7aa;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.45;
+    h1 {
+      font-size: 1.35rem;
+      color: var(--point-color);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
     }
 
-    .user-profile-bar {
+    .rank-bar {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       align-items: center;
-      background: linear-gradient(135deg, #1e1b4b, #0f172a);
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid #4338ca;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #f1ede2;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: bold;
     }
 
-    .rank-tag {
-      background: linear-gradient(135deg, #f59e0b, #b45309);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      letter-spacing: -0.2px;
+    .rank-badge {
+      color: var(--point-color);
       display: inline-block;
-      cursor: pointer;
-      user-select: none;
+      padding: 2px 8px;
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
     }
 
-    .user-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: #fde68a;
-      margin-left: 6px;
+    /* 조선 8도 평정 진행도 */
+    .map-status-card {
+      background: var(--paper-color);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.85rem;
     }
 
-    .rank-subtext {
-      font-size: 12px;
-      color: #94a3b8;
-      font-weight: 600;
+    .map-status-title {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 6px;
     }
 
-    .top-bar {
+    .province-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .p-tag {
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      border: 1px solid #ccc;
+      color: #999;
+      background: #fafafa;
+    }
+
+    .p-tag.conquered {
+      border-color: var(--point-color);
+      background: #ffe8e8;
+      color: var(--point-color);
+      font-weight: bold;
+    }
+
+    /* 퀴즈 박스 (과거 시험지 스타일) */
+    .quiz-card {
+      background: var(--paper-color);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+      position: relative;
+    }
+
+    .quiz-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: #777;
     }
 
-    .round-tag {
-      font-size: 13px;
+    .quiz-category {
+      background: var(--border-color);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+
+    .quiz-question {
+      font-size: 1.12rem;
       font-weight: 700;
-      color: #38bdf8;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      color: #1a1a1a;
+      word-break: keep-all;
     }
 
-    .progress-text {
-      font-size: 13px;
-      color: #94a3b8;
-      font-weight: 600;
+    /* 힌트 버튼 (난이도 3 전용) */
+    .hint-container {
+      margin-bottom: 16px;
+      display: none;
     }
 
-    .progress-track {
+    .btn-hint {
+      background: #fbf7ee;
+      border: 1px dashed var(--border-color);
+      color: #8c7355;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
       width: 100%;
-      height: 6px;
-      background-color: #334155;
-      border-radius: 9999px;
-      overflow: hidden;
+      justify-content: center;
     }
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #818cf8);
-      border-radius: 9999px;
-      transition: width 0.3s ease;
+    .hint-content {
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      background: #fdf6e2;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #634a00;
+      border-left: 3px solid #d4af37;
     }
 
-    .category-title {
-      font-size: 13px;
-      color: #94a3b8;
-      font-weight: 600;
-    }
-
-    .question-title {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.55;
-      color: #f1f5f9;
-      margin-top: 4px;
-    }
-
-    .options-group {
+    /* 선택지 버튼 (2지선다) */
+    .options-grid {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .option-btn {
-      background-color: #27354a;
-      border: 1px solid #334155;
-      color: #e2e8f0;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 15px;
+    .btn-option {
+      background: #fff;
+      border: 2px solid #dcd3c1;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 1rem;
       font-weight: 600;
-      text-align: left;
+      color: var(--ink-color);
       cursor: pointer;
-      line-height: 1.45;
-      transition: all 0.2s;
+      text-align: left;
+      transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .option-btn:hover {
-      background-color: #334155;
-    }
-
-    .option-btn:active {
+    .btn-option:active {
       transform: scale(0.98);
     }
 
-    .option-btn.correct {
-      background-color: #059669 !important;
-      border-color: #34d399 !important;
-      color: #ffffff !important;
+    .btn-option.correct {
+      background: #e8f5e9 !important;
+      border-color: #2e7d32 !important;
+      color: #1b5e20 !important;
     }
 
-    .option-btn.wrong {
-      background-color: #dc2626 !important;
-      border-color: #f87171 !important;
-      color: #ffffff !important;
+    .btn-option.wrong {
+      background: #ffebee !important;
+      border-color: #c62828 !important;
+      color: #b71c1c !important;
     }
 
-    /* 20초 실록 영상 힌트 버튼 스타일 */
-    .hint-btn {
-      background-color: rgba(239, 68, 68, 0.12);
-      border: 1px dashed #ef4444;
-      color: #fca5a5;
-      padding: 11px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-      margin-top: 2px;
-    }
-
-    .hint-btn:hover {
-      background-color: rgba(239, 68, 68, 0.22);
-      color: #ffffff;
-    }
-
+    /* 실시간 해설창 */
     .explanation-box {
-      display: none;
-      background-color: #0f172a;
-      border: 1px solid #38bdf8;
-      border-radius: 12px;
+      margin-top: 16px;
       padding: 14px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #cbd5e1;
-    }
-
-    .next-btn {
-      display: none;
-      background: linear-gradient(90deg, #2563eb, #38bdf8);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .result-box {
-      display: none;
-      text-align: center;
-      padding: 6px 0;
-    }
-
-    .result-score {
-      font-size: 38px;
-      font-weight: 800;
-      color: #38bdf8;
-      margin: 8px 0;
-    }
-
-    .royal-edict {
-      display: none;
-      background: #fdf6e2;
-      color: #1e1b18;
-      border: 3px solid #b45309;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
-      animation: unfold 0.6s ease-out;
-      text-align: center;
-    }
-
-    @keyframes unfold {
-      from { transform: scaleY(0.1); opacity: 0; }
-      to { transform: scaleY(1); opacity: 1; }
-    }
-
-    .edict-header {
-      font-size: 18px;
-      font-weight: 900;
-      color: #991b1b;
-      letter-spacing: 4px;
-      margin-bottom: 6px;
-      border-bottom: 2px dashed #b45309;
-      padding-bottom: 4px;
-    }
-
-    .edict-body {
-      font-size: 14px;
-      line-height: 1.6;
-      font-weight: 700;
-      color: #292524;
-      margin: 8px 0;
-    }
-
-    .edict-stamp {
-      display: inline-block;
-      border: 2px solid #dc2626;
-      color: #dc2626;
-      font-weight: 900;
-      padding: 2px 8px;
+      background: #f9f6ed;
+      border-left: 4px solid var(--border-color);
       border-radius: 4px;
-      font-size: 12px;
-      margin-top: 4px;
+      font-size: 0.9rem;
+      display: none;
+      word-break: keep-all;
     }
 
-    .joseon-map-card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 16px;
+    .btn-next {
+      margin-top: 16px;
+      width: 100%;
       padding: 14px;
-      margin: 14px 0;
-      text-align: center;
+      background: var(--point-color);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
     }
 
-    .map-header {
-      display: flex;
-      justify-content: space-between;
+    /* 결과 모달창 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      justify-content: center;
       align-items: center;
-      margin-bottom: 10px;
+      padding: 20px;
+      z-index: 1000;
     }
 
-    .map-title {
-      font-size: 14px;
+    .modal-content {
+      background: var(--paper-color);
+      border: 3px solid var(--point-color);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      color: var(--point-color);
       font-weight: 800;
-      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .score-summary {
+      font-size: 1.1rem;
+      margin: 14px 0;
+      font-weight: bold;
+    }
+
+    .rank-up-alert {
+      background: #fff8e1;
+      border: 1px solid #ffd54f;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: #8d6e63;
+    }
+
+    .modal-actions {
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    /* 하이패스 무제한 버튼 스타일 */
+    .btn-hipass {
+      background: #1e272e;
+      color: #ffd32a;
+      border: 2px solid #ffd32a;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: all 0.2s;
     }
 
-    .map-conquered-status {
-      font-size: 12px;
-      font-weight: 700;
-      color: #38bdf8;
-      background: #1e293b;
-      padding: 3px 8px;
-      border-radius: 6px;
+    .btn-hipass:active {
+      transform: scale(0.98);
     }
 
-    .map-svg-wrap {
-      width: 100%;
-      max-width: 280px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-    }
-
-    .province-path {
-      fill: #1e293b;
-      stroke: #334155;
-      stroke-width: 1.5;
-      transition: all 0.4s ease;
-    }
-
-    .province-path.conquered {
-      fill: #0284c7;
-      stroke: #38bdf8;
-      stroke-width: 2;
-      filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
-    }
-
-    .province-path.capital {
-      fill: #d97706 !important;
-      stroke: #fbbf24 !important;
-    }
-
-    .province-label {
-      font-size: 10px;
-      font-weight: 800;
-      fill: #64748b;
-      pointer-events: none;
-      transition: all 0.3s;
-    }
-
-    .province-label.conquered {
-      fill: #ffffff;
-    }
-
-    .share-btn {
-      background-color: #fee500;
-      color: #191919;
+    .btn-share {
+      background: #fae100;
+      color: #371d1e;
       border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 800;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: bold;
       cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-      line-height: 1.4;
     }
 
-    .bonus-btn {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #ffffff;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-      line-height: 1.45;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    /* 암행어사 마스터 키 패널 모달 */
-    .admin-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .admin-content {
-      background: #1e293b;
-      border: 2px solid #f59e0b;
-      border-radius: 18px;
-      max-width: 400px;
-      width: 100%;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
-    }
-
-    .admin-title {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fde68a;
+    .loader {
       text-align: center;
-      margin-bottom: 14px;
-      border-bottom: 1px dashed #334155;
-      padding-bottom: 8px;
-    }
-
-    .admin-btn {
-      width: 100%;
-      padding: 12px;
-      margin: 6px 0;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
+      padding: 40px;
+      font-weight: bold;
+      color: #777;
     }
   </style>
 </head>
 <body>
 
-  <div class="ad-container" id="ad-top">
-    <div class="ad-placeholder">광고 배너 영역 (상단)</div>
-  </div>
-
-  <div class="quiz-container">
-    <div class="challenge-banner" id="challenge-banner"></div>
-
-    <div class="user-profile-bar">
-      <div>
-        <!-- 이 신분 태그를 5번 연속 클릭하면 암행어사 마스터 키가 열립니다 -->
-        <span class="rank-tag" id="user-rank-tag" onclick="handleSecretTap()">신분</span>
-        <span class="user-title" id="user-title">초야의 백성</span>
-      </div>
-      <div class="rank-subtext" id="user-duty-text">과거 준비생</div>
+<div class="container">
+  <header>
+    <h1>📜 조선 과거시험: 영토 평정전</h1>
+    <div class="rank-bar">
+      <div>현재 품계: <span id="user-rank" class="rank-badge">종9품 참봉</span></div>
+      <div>평정 점수: <span id="user-score" style="color:var(--point-color);">0</span>점</div>
     </div>
+  </header>
 
-    <div id="quiz-area">
-      <div class="top-bar">
-        <span class="round-tag" id="round-mode-tag">오늘의 과거시험 (1차)</span>
-        <span class="progress-text" id="progress-text">1 / 5</span>
-      </div>
-
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-
-      <div style="margin-top: 6px;">
-        <div class="category-title" id="category-title">문제 봉인 해제 중...</div>
-        <div class="question-title" id="question-title">과거 시험 문제를 선별하고 있습니다.</div>
-      </div>
-
-      <div class="options-group" id="options-group" style="margin-top: 14px;"></div>
-      
-      <!-- 🎬 20초 실록 영상 힌트 버튼 -->
-      <button class="hint-btn" id="hint-btn" onclick="openHintAction()">🎬 20초 실록 영상 힌트 (곧 공개)</button>
-
-      <div class="explanation-box" id="explanation-box"></div>
-      <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 풀기</button>
+  <!-- 8도 점령 현황 카드 -->
+  <div class="map-status-card">
+    <div class="map-status-title">
+      <span>🗺️ 전국 8도 평정 상태</span>
+      <span id="conquered-count" style="color: var(--point-color);">0 / 8도 평정</span>
     </div>
-
-    <div class="result-box" id="result-box">
-      <div class="royal-edict" id="royal-edict">
-        <div class="edict-header">敎 旨 (교 지)</div>
-        <div class="edict-body" id="edict-text"></div>
-        <div class="edict-stamp">朝鮮國王之寶</div>
-      </div>
-
-      <h2 style="font-size: 19px; font-weight: 700;">이번 시험 채점 결과</h2>
-      <div class="result-score" id="final-score">0점</div>
-      <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 8px;"></p>
-      <p id="review-info" style="color: #38bdf8; font-size: 13px; line-height: 1.5; margin-bottom: 12px;"></p>
-
-      <div class="joseon-map-card">
-        <div class="map-header">
-          <div class="map-title">🗺️ 조선 8도 관할령 영토도</div>
-          <div class="map-conquered-status" id="map-status-text">0/8도 장악</div>
-        </div>
-        <div class="map-svg-wrap">
-          <svg viewBox="0 0 240 320" width="100%" height="240" xmlns="http://www.w3.org/2000/svg">
-            <path id="p-hamgyong" class="province-path" d="M115,20 L185,15 L220,60 L195,110 L150,95 L125,75 Z" />
-            <text id="t-hamgyong" x="165" y="65" class="province-label" text-anchor="middle">함경도</text>
-
-            <path id="p-pyongan" class="province-path" d="M40,70 L115,55 L125,75 L110,125 L45,115 Z" />
-            <text id="t-pyongan" x="78" y="95" class="province-label" text-anchor="middle">평안도</text>
-
-            <path id="p-hwanghae" class="province-path" d="M45,120 L110,125 L105,160 L40,155 Z" />
-            <text id="t-hwanghae" x="75" y="145" class="province-label" text-anchor="middle">황해도</text>
-
-            <path id="p-gangwon" class="province-path" d="M110,125 L150,95 L195,110 L180,180 L120,175 Z" />
-            <text id="t-gangwon" x="145" y="145" class="province-label" text-anchor="middle">강원도</text>
-
-            <path id="p-gyeonggi" class="province-path" d="M60,160 L105,160 L118,175 L110,210 L65,205 Z" />
-            <text id="t-gyeonggi" x="88" y="185" class="province-label" text-anchor="middle">경기(한양)</text>
-
-            <path id="p-chungcheong" class="province-path" d="M65,210 L110,210 L125,215 L115,245 L60,240 Z" />
-            <text id="t-chungcheong" x="88" y="230" class="province-label" text-anchor="middle">충청도</text>
-
-            <path id="p-gyeongsang" class="province-path" d="M125,185 L180,185 L190,265 L135,285 L120,245 Z" />
-            <text id="t-gyeongsang" x="155" y="240" class="province-label" text-anchor="middle">경상도</text>
-
-            <path id="p-jeolla" class="province-path" d="M55,245 L115,245 L125,275 L95,305 L45,295 Z" />
-            <text id="t-jeolla" x="85" y="278" class="province-label" text-anchor="middle">전라도</text>
-          </svg>
-        </div>
-        <p id="map-assigned-text" style="font-size: 12px; color: #94a3b8; margin-top: 8px;">현재 부임지: 과거를 치러 영토 관할권을 얻으십시오.</p>
-      </div>
-
-      <div id="bonus-action-area" style="display: none;">
-        <button class="bonus-btn" onclick="triggerShareForBonus()">🎁 친구에게 공유하고<br>오늘 보너스 5문제 더 풀기!</button>
-      </div>
-
-      <div id="daily-complete-area" style="display: none;">
-        <p style="color: #f59e0b; font-weight: 700; font-size: 14px; margin-bottom: 8px;">🌙 오늘의 모든 과거시험(총 10문항) 완료!</p>
-        <p style="color: #64748b; font-size: 13px; margin-bottom: 12px; line-height: 1.5;">오늘 밤 12시(자정)에 새로운 과거시험이 열립니다!</p>
-      </div>
-
-      <button class="share-btn" onclick="shareQuiz()">📜 카카오톡으로 내 벼슬 자랑하기</button>
+    <div class="province-tags" id="province-list">
+      <span class="p-tag" data-p="0">경기도</span>
+      <span class="p-tag" data-p="1">충청도</span>
+      <span class="p-tag" data-p="2">전라도</span>
+      <span class="p-tag" data-p="3">경상도</span>
+      <span class="p-tag" data-p="4">강원도</span>
+      <span class="p-tag" data-p="5">황해도</span>
+      <span class="p-tag" data-p="6">평안도</span>
+      <span class="p-tag" data-p="7">함경도</span>
     </div>
   </div>
 
-  <div class="ad-container" id="ad-bottom">
-    <div class="ad-placeholder">광고 배너 영역 (하단)</div>
-  </div>
+  <!-- 퀴즈 영역 -->
+  <div class="quiz-card" id="quiz-box">
+    <div id="loading" class="loader">구글 시트에서 700문항을 불러오는 중...</div>
+    
+    <div id="quiz-content" style="display: none;">
+      <div class="quiz-meta">
+        <span class="quiz-category" id="q-category">분류</span>
+        <span id="q-progress">문항 1 / 5</span>
+      </div>
 
-  <!-- 🔒 대표님 전용 암행어사 마스터 키 패널 -->
-  <div class="admin-modal" id="admin-modal" onclick="closeSecretPanel(event)">
-    <div class="admin-content" onclick="event.stopPropagation()">
-      <div class="admin-title">👑 암행어사 마스터 키 (개발/테스트)</div>
-      <button class="admin-btn" style="background: #f59e0b; color: #000;" onclick="adminSetRank(500)">👑 [만렙] 조선 국왕 즉시 승급</button>
-      <button class="admin-btn" style="background: #3b82f6; color: #fff;" onclick="adminSetRank(380)">📜 [정1품] 영의정 제수</button>
-      <button class="admin-btn" style="background: #10b981; color: #fff;" onclick="adminResetDaily()">⚡ 오늘 응시 제한 즉시 리셋 (무한응시)</button>
-      <button class="admin-btn" style="background: #64748b; color: #fff;" onclick="adminClearAll()">🧹 모든 기록 초기화 (초야의 백성 복귀)</button>
-      <button class="admin-btn" style="background: #334155; color: #cbd5e1; margin-top: 10px;" onclick="closeSecretPanel()">닫기</button>
+      <div class="quiz-question" id="q-text">질문이 여기에 표시됩니다.</div>
+
+      <!-- 힌트 버튼 (난이도 3 전용) -->
+      <div class="hint-container" id="hint-wrapper">
+        <button class="btn-hint" onclick="toggleHint()">
+          📜 암행어사 밀서 (난이도 3 특별 힌트 보기)
+        </button>
+        <div class="hint-content" id="hint-text"></div>
+      </div>
+
+      <!-- 2지선다 버튼 -->
+      <div class="options-grid">
+        <button class="btn-option" onclick="selectAnswer(1)">
+          <span id="opt-1-text">보기 1</span>
+        </button>
+        <button class="btn-option" onclick="selectAnswer(2)">
+          <span id="opt-2-text">보기 2</span>
+        </button>
+      </div>
+
+      <!-- 정답 해설 -->
+      <div class="explanation-box" id="explanation"></div>
+
+      <!-- 다음 문항 버튼 -->
+      <button class="btn-next" id="next-btn" onclick="nextQuestion()">다음 문항으로 ➜</button>
     </div>
   </div>
+</div>
 
-  <script>
-    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?output=csv";
-    const QUIZ_COUNT = 5;
+<!-- 과거시험 결과 모달 -->
+<div class="modal-overlay" id="result-modal">
+  <div class="modal-content">
+    <div class="modal-title">🏁 과거시험 채점 결과</div>
+    <div class="score-summary" id="modal-score-text">5문제 중 5문제 급제!</div>
+    <div class="rank-up-alert" id="modal-rank-alert">축하합니다! 새로운 관직에 제수되었습니다.</div>
+    
+    <div class="modal-actions">
+      <!-- 🔥 무한 하이패스 버튼 (공유나 리셋 없이 즉시 다음 5문제) -->
+      <button class="btn-hipass" onclick="continueHiPass()">
+        ⚡ 쉼 없는 과거시험 (공유 없이 다음 5문제 즉시 도전)
+      </button>
 
-    const STORAGE_SOLVED = "history_mastered_ids";
-    const STORAGE_EXP = "history_user_exp";
-    const STORAGE_DAILY_DATE = "history_last_quiz_date";
-    const STORAGE_DAILY_STAGE = "history_daily_stage";
-    const STORAGE_LAST_SCORE = "history_last_score";
+      <!-- 친구 공유 버튼 -->
+      <button class="btn-share" onclick="shareQuiz()">
+        📢 시험지 카톡 공유하고 영토 자랑하기
+      </button>
+    </div>
+  </div>
+</div>
 
-    let quizData = [];
-    let currentIdx = 0;
-    let score = 0;
-    let isAnswered = false;
-    let totalQuestionsCount = 0;
-    let initialExp = 0;
-    let currentPlayStage = 'base';
+<script>
+  // ==========================================
+  // [1] 구글 스프레드시트 CSV 게시 URL 연동
+  // ==========================================
+  // 대표님의 구글 시트 웹 게시(CSV) 링크를 입력하시면 자동으로 700문항을 긁어옵니다.
+  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCk8l_x6G46qZ9oF-nEAEw53-2kXyR2d8K87lQ/pub?gid=0&single=true&output=csv";
 
-    // 마스터 키 연타 감지 변수
-    let secretTapCount = 0;
-    let secretTapTimer = null;
+  // 품계 테이블 (점수에 따라 자동 승급)
+  const RANKS = [
+    { score: 0, title: "평민 (과거 준비생)" },
+    { score: 20, title: "종9품 참봉" },
+    { score: 50, title: "정8품 사서" },
+    { score: 90, title: "종7품 박사" },
+    { score: 140, title: "정6품 전적" },
+    { score: 200, title: "정5품 홍문관 교리" },
+    { score: 270, title: "종4품 서해도 군수" },
+    { score: 350, title: "정3품 당상관 동부승지" },
+    { score: 440, title: "종2품 경기 관찰사" },
+    { score: 540, title: "정2품 판서" },
+    { score: 650, title: "정1품 영의정 (천하통일)" }
+  ];
 
-    const RANKS = [
-      { id: 10, minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan','hamgyong'], capital: 'gyeonggi', desc: "팔도강산 완전 통치" },
-      { id: 9,  minExp: 380, tag: "정1품", title: "영의정", duty: "일인지하 만인지상", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan'], capital: 'gyeonggi', desc: "7도 행정 총괄" },
-      { id: 8,  minExp: 270, tag: "정2품", title: "이조판서", duty: "조정의 으뜸 대신", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae'], capital: 'gyeonggi', desc: "중원 6도 관할" },
-      { id: 7,  minExp: 190, tag: "정3품", title: "당상관 목사", duty: "붉은 단령 착용", territories: ['gyeonggi','chungcheong','jeolla','gyeongsang'], capital: 'gyeongsang', desc: "남부 삼남 및 경기 관할" },
-      { id: 6,  minExp: 130, tag: "종4품", title: "나주 군수", duty: "고을의 목민관 사또", territories: ['gyeonggi','chungcheong','jeolla'], capital: 'jeolla', desc: "호남 나주목 관할" },
-      { id: 5,  minExp: 85,  tag: "종6품", title: "지평 / 훈도", duty: "중견 실무 관원", territories: ['gyeonggi','chungcheong'], capital: 'chungcheong', desc: "호서 관할" },
-      { id: 4,  minExp: 50,  tag: "종7품", title: "규장각 박사", duty: "정식 관복 착용", territories: ['gyeonggi','gangwon'], capital: 'gangwon', desc: "경기·강원 관할" },
-      { id: 3,  minExp: 25,  tag: "종9품", title: "권지 (실습관)", duty: "첫 관직 등청", territories: ['gyeonggi'], capital: 'gyeonggi', desc: "한양 조정 등청" },
-      { id: 2,  minExp: 10,  tag: "유생", title: "성균관 진사", duty: "소과 급제 한양 입성", territories: ['gyeonggi'], capital: 'gyeonggi', desc: "한양 성균관 유학" },
-      { id: 1,  minExp: 3,   tag: "유생", title: "서당 훈도생", duty: "천자문 완독", territories: [], capital: null, desc: "과거 공부 중" },
-      { id: 0,  minExp: 0,   tag: "백성", title: "초야의 백성", duty: "과거 준비생", territories: [], capital: null, desc: "미개척 안개 상태" }
-    ];
+  // 상태 변수
+  let allQuestions = [];
+  let currentBatch = [];
+  let currentIndex = 0;
+  let batchCorrectCount = 0;
+  let totalScore = parseInt(localStorage.getItem('user_history_score') || '0');
+  let solvedIndexes = new Set(JSON.parse(localStorage.getItem('solved_indices') || '[]'));
+  let audioCtx = null;
 
-    function getTodayString() {
-      const d = new Date();
-      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-    }
+  // ==========================================
+  // [2] Web Audio 국악 실록 효과음 (팡파레)
+  // ==========================================
+  function playFanfare(isSuccess) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioCtx.currentTime;
 
-    function getRank(exp) {
-      return RANKS.find(r => exp >= r.minExp) || RANKS[RANKS.length - 1];
-    }
-
-    function getRankById(id) {
-      return RANKS.find(r => r.id === parseInt(id, 10)) || RANKS[RANKS.length - 1];
-    }
-
-    function updateProfileUI() {
-      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-      const rank = getRank(exp);
-      document.getElementById('user-rank-tag').innerText = rank.tag;
-      document.getElementById('user-title').innerText = rank.title;
-      document.getElementById('user-duty-text').innerText = rank.duty;
-    }
-
-    function renderJoseonMap(rank) {
-      const allTerritories = ['hamgyong', 'pyongan', 'hwanghae', 'gangwon', 'gyeonggi', 'chungcheong', 'gyeongsang', 'jeolla'];
-      
-      allTerritories.forEach(t => {
-        const path = document.getElementById(`p-${t}`);
-        const text = document.getElementById(`t-${t}`);
-        if (path) path.className.baseVal = "province-path";
-        if (text) text.className.baseVal = "province-label";
-      });
-
-      rank.territories.forEach(t => {
-        const path = document.getElementById(`p-${t}`);
-        const text = document.getElementById(`t-${t}`);
-        if (path) {
-          path.classList.add('conquered');
-          if (t === rank.capital) path.classList.add('capital');
-        }
-        if (text) text.classList.add('conquered');
-      });
-
-      document.getElementById('map-status-text').innerText = `${rank.territories.length}/8도 장악`;
-      document.getElementById('map-assigned-text').innerHTML = `📍 <strong>현재 관할권:</strong> [${rank.title}] ${rank.desc}`;
-    }
-
-    function checkInvitedChallenge() {
-      const params = new URLSearchParams(window.location.search);
-      const rankId = params.get('r');
-      const challengerScore = params.get('s');
-
-      if (rankId !== null) {
-        const challenger = getRankById(rankId);
-        const scoreText = (challengerScore && challengerScore !== "0") ? `${challengerScore}점` : '우수한 성적';
-        const banner = document.getElementById('challenge-banner');
-        banner.innerHTML = `⚔️ <strong>[${challenger.tag} ${challenger.title}]</strong>의 도전장이 도착했습니다!<br>그의 점수(${scoreText})를 꺾고 더 넓은 영토를 평정하십시오!`;
-        banner.style.display = 'block';
-      }
-    }
-
-    function playFanfareSound() {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-
-        const notes = [
-          { f: 261.63, start: 0.0, dur: 0.18 },
-          { f: 329.63, start: 0.2, dur: 0.18 },
-          { f: 392.00, start: 0.4, dur: 0.22 },
-          { f: 523.25, start: 0.65, dur: 0.6 }
-        ];
-
-        notes.forEach(n => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(n.f, ctx.currentTime + n.start);
-          gain.gain.setValueAtTime(0.001, ctx.currentTime + n.start);
-          gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + n.start + 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.start + n.dur);
+      if (isSuccess) {
+        // 급제 팡파레 (징소리와 나팔 화음)
+        [330, 392, 440, 523, 659].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.6);
           osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + n.start);
-          osc.stop(ctx.currentTime + n.start + n.dur);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.1);
+          osc.stop(now + idx * 0.1 + 0.6);
         });
-
-        const drumOsc = ctx.createOscillator();
-        const drumGain = ctx.createGain();
-        drumOsc.frequency.setValueAtTime(110, ctx.currentTime + 0.65);
-        drumOsc.frequency.exponentialRampToValueAtTime(35, ctx.currentTime + 1.2);
-        drumGain.gain.setValueAtTime(0.5, ctx.currentTime + 0.65);
-        drumGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.3);
-        drumOsc.connect(drumGain);
-        drumGain.connect(ctx.destination);
-        drumOsc.start(ctx.currentTime + 0.65);
-        drumOsc.stop(ctx.currentTime + 1.3);
-      } catch (e) {}
-    }
-
-    function parseCSV(text) {
-      const rows = [];
-      let currentRow = [];
-      let currentVal = '';
-      let insideQuotes = false;
-
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        const nextChar = text[i + 1];
-
-        if (char === '"') {
-          if (insideQuotes && nextChar === '"') {
-            currentVal += '"';
-            i++;
-          } else {
-            insideQuotes = !insideQuotes;
-          }
-        } else if (char === ',' && !insideQuotes) {
-          currentRow.push(currentVal.trim());
-          currentVal = '';
-        } else if ((char === '\r' || char === '\n') && !insideQuotes) {
-          if (char === '\r' && nextChar === '\n') i++;
-          currentRow.push(currentVal.trim());
-          if (currentRow.some(col => col.length > 0)) rows.push(currentRow);
-          currentRow = [];
-          currentVal = '';
-        } else {
-          currentVal += char;
-        }
-      }
-      if (currentVal.length > 0 || currentRow.length > 0) {
-        currentRow.push(currentVal.trim());
-        if (currentRow.some(col => col.length > 0)) rows.push(currentRow);
-      }
-      return rows;
-    }
-
-    async function fetchQuizFromSheet() {
-      checkInvitedChallenge();
-
-      const today = getTodayString();
-      const lastDate = localStorage.getItem(STORAGE_DAILY_DATE);
-      const stage = localStorage.getItem(STORAGE_DAILY_STAGE);
-
-      if (lastDate !== today) {
-        localStorage.setItem(STORAGE_DAILY_DATE, today);
-        localStorage.setItem(STORAGE_DAILY_STAGE, 'ready');
-        currentPlayStage = 'base';
       } else {
-        if (stage === 'bonus_unlocked') {
-          currentPlayStage = 'bonus';
-          document.getElementById('round-mode-tag').innerText = "보너스 특별시험 (2차)";
-        } else if (stage === 'base_done' || stage === 'bonus_done') {
-          showAlreadyDoneScreen(stage);
-          return;
-        }
+        // 낙방 효과음 (낮은 징 여운)
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(90, now + 0.4);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
       }
+    } catch(e) {
+      // AudioContext 제한 브라우저 대비 무음 처리
+    }
+  }
 
-      initialExp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
+  // ==========================================
+  // [3] 초기 구글 시트 데이터 로드
+  // ==========================================
+  async function initData() {
+    try {
+      const response = await fetch(SHEET_CSV_URL);
+      const csvText = await response.text();
+      parseCSV(csvText);
       updateProfileUI();
 
-      try {
-        const response = await fetch(SHEET_CSV_URL + '&t=' + Date.now());
-        const csvText = await response.text();
-        const rows = parseCSV(csvText);
-
-        const allQuestions = [];
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i];
-          if (!row || row.length < 5) continue;
-
-          const category = row[0] || "역사 상식";
-          const question = row[1];
-          const opt1 = row[2];
-          const opt2 = row[3];
-          const answerNum = parseInt(row[4], 10);
-          const explanation = row[5] || "";
-          const level = (row[6] && parseInt(row[6], 10)) ? parseInt(row[6], 10) : 1;
-
-          if (question && opt1 && opt2 && (answerNum === 1 || answerNum === 2)) {
-            allQuestions.push({
-              id: question.trim(),
-              category: category,
-              question: question,
-              options: [opt1, opt2],
-              answer: answerNum - 1,
-              explanation: explanation,
-              level: level
-            });
-          }
-        }
-
-        totalQuestionsCount = allQuestions.length;
-        if (totalQuestionsCount === 0) throw new Error("문제 없음");
-
-        const mastered = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]");
-        let pool = allQuestions.filter(q => !mastered.includes(q.id));
-
-        if (pool.length === 0) {
-          localStorage.removeItem(STORAGE_SOLVED);
-          pool = allQuestions;
-        }
-
-        // [스마트 난이도 배정]
-        let targetLevels = [];
-        if (initialExp < 10) {
-          targetLevels = [1, 1, 1, 1, 2];
-        } else if (initialExp < 85) {
-          targetLevels = [1, 1, 2, 2, 3];
-        } else {
-          targetLevels = [2, 2, 3, 3, 3];
-        }
-
-        const selectedPool = [];
-        targetLevels.forEach(lvl => {
-          const matched = pool.filter(q => q.level === lvl && !selectedPool.some(s => s.id === q.id));
-          if (matched.length > 0) {
-            const picked = matched[Math.floor(Math.random() * matched.length)];
-            selectedPool.push(picked);
-          } else {
-            const remain = pool.filter(q => !selectedPool.some(s => s.id === q.id));
-            if (remain.length > 0) {
-              selectedPool.push(remain[Math.floor(Math.random() * remain.length)]);
-            }
-          }
-        });
-
-        while (selectedPool.length < Math.min(QUIZ_COUNT, pool.length)) {
-          const remain = pool.filter(q => !selectedPool.some(s => s.id === q.id));
-          if (remain.length === 0) break;
-          selectedPool.push(remain[Math.floor(Math.random() * remain.length)]);
-        }
-
-        quizData = selectedPool;
-        renderQuestion();
-      } catch (err) {
-        document.getElementById('category-title').innerText = "안내";
-        document.getElementById('question-title').innerText = "문제를 불러오는 중입니다. 잠시 후 다시 접속해 주세요.";
+      if (allQuestions.length === 0) {
+        loadFallbackQuestions();
       }
-    }
 
-    function showAlreadyDoneScreen(stage) {
+      startNewBatch();
+    } catch (err) {
+      console.warn("구글 시트 연동 대기 중 - 내장 기본 문제로 가동합니다.", err);
+      loadFallbackQuestions();
       updateProfileUI();
-      document.getElementById('quiz-area').style.display = 'none';
-      const resultBox = document.getElementById('result-box');
-      resultBox.style.display = 'block';
+      startNewBatch();
+    }
+  }
 
-      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-      const currentRank = getRank(exp);
-      renderJoseonMap(currentRank);
+  // CSV 파서 (따옴표, 탭, 쉼표 대응)
+  function parseCSV(text) {
+    const lines = text.split(/\r\n|\n/);
+    allQuestions = [];
 
-      const savedScore = localStorage.getItem(STORAGE_LAST_SCORE);
-      document.getElementById('final-score').innerText = (savedScore && savedScore !== "0") ? `${savedScore}점` : "통과";
-      document.getElementById('result-comment').innerText = "오늘 준비된 과거시험을 이미 치르셨습니다!";
-      
-      const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
-      document.getElementById('review-info').innerHTML = `💡 총 누적 통과: <strong>${masteredCount}문항</strong>`;
+    // 1행은 헤더이므로 생략 (i = 1)
+    for (let i = 1; i < lines.length; i++) {
+      const row = lines[i];
+      if (!row || !row.trim()) continue;
 
-      if (stage === 'base_done') {
-        document.getElementById('bonus-action-area').style.display = 'block';
+      let cols = [];
+      if (row.includes('\t')) {
+        cols = row.split('\t');
       } else {
-        document.getElementById('daily-complete-area').style.display = 'block';
+        cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      }
+
+      cols = cols.map(c => c ? c.replace(/^"|"$/g, '').trim() : '');
+
+      if (cols.length >= 5 && cols[1]) {
+        allQuestions.push({
+          category: cols[0] || '역사 일반',
+          question: cols[1],
+          opt1: cols[2],
+          opt2: cols[3],
+          ans: parseInt(cols[4]) || 1,
+          explanation: cols[5] || '상세 해설이 등록되어 있지 않습니다.',
+          level: parseInt(cols[6]) || 1,
+          originalIndex: i - 1
+        });
       }
     }
+  }
 
-    function renderQuestion() {
-      isAnswered = false;
-      const data = quizData[currentIdx];
+  // 예비용 문항
+  function loadFallbackQuestions() {
+    allQuestions = [
+      { category: '조선 왕실', question: '조선시대 왕의 얼굴을 그린 초상화를 부르던 공식 명칭은?', opt1: '어진', opt2: '의궤', ans: 1, explanation: '왕의 얼굴은 어진(御眞)이라 칭하며 주탑화사가 주관하여 그렸습니다.', level: 1, originalIndex: 0 },
+      { category: '삼국 영웅', question: '고구려 광개토대왕이 우리나라 최초로 독자 사용한 연호는?', opt1: '영락', opt2: '건원', ans: 1, explanation: '영원한 즐거움을 뜻하는 영락(永樂) 연호를 사용하여 천하관을 선포했습니다.', level: 2, originalIndex: 1 },
+      { category: '고려 왕조', question: '고려 숙종 때 은 한 근으로 한반도 지형을 본떠 만든 고액 은돈은?', opt1: '활구(은병)', opt2: '상평통보', ans: 1, explanation: '입구가 넓은 호병 모양의 활구는 귀족 관료들의 고액 거래용 은돈이었습니다.', level: 3, originalIndex: 2 },
+      { category: '조선 생활', question: '조선시대 엽전이 시중에 마르고 화폐 유통이 중단되던 현상은?', opt1: '전황', opt2: '사재기', ans: 1, explanation: '상평통보를 창고에 쌓아두어 유통이 마르는 것을 전황(錢荒)이라 했습니다.', level: 3, originalIndex: 3 },
+      { category: '근현대사', question: '1940년 대한민국 임시정부가 충칭에서 창설한 정규 국방군은?', opt1: '한국광복군', opt2: '별기군', ans: 1, explanation: '한국광복군은 총사령 이청천, 참모장 이범석을 중심으로 결성된 정규군입니다.', level: 2, originalIndex: 4 }
+    ];
+  }
 
-      document.getElementById('progress-text').innerText = `${currentIdx + 1} / ${quizData.length}`;
-      document.getElementById('progress-fill').style.width = `${((currentIdx + 1) / quizData.length) * 100}%`;
-      document.getElementById('category-title').innerText = data.category;
-      document.getElementById('question-title').innerText = data.question;
+  // ==========================================
+  // [4] 하이패스 5문항 선정 및 무한 출제 로직
+  // ==========================================
+  function startNewBatch() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('quiz-content').style.display = 'block';
 
-      const optionsGroup = document.getElementById('options-group');
-      optionsGroup.innerHTML = '';
+    // 푼 적 없는 문제들만 추리기
+    let available = allQuestions.filter(q => !solvedIndexes.has(q.originalIndex));
 
-      data.options.forEach((optText, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerText = `${index + 1}. ${optText}`;
-        btn.onclick = () => selectOption(index, btn);
-        optionsGroup.appendChild(btn);
+    // 700문항을 전부 푼 경우 자동 초기화
+    if (available.length < 5) {
+      alert("장원급제! 준비된 모든 과거 문제를 섭렵하셨습니다. 문제를 처음부터 다시 섞습니다.");
+      solvedIndexes.clear();
+      localStorage.removeItem('solved_indices');
+      available = [...allQuestions];
+    }
+
+    // 무작위 5문항 셔플 추출
+    available.sort(() => 0.5 - Math.random());
+    currentBatch = available.slice(0, 5);
+
+    currentIndex = 0;
+    batchCorrectCount = 0;
+    renderQuestion();
+  }
+
+  // 1문항 렌더링
+  function renderQuestion() {
+    const q = currentBatch[currentIndex];
+    document.getElementById('q-category').innerText = q.category;
+    document.getElementById('q-progress').innerText = `문항 ${currentIndex + 1} / 5`;
+    document.getElementById('q-text').innerText = q.question;
+    document.getElementById('opt-1-text').innerText = q.opt1;
+    document.getElementById('opt-2-text').innerText = q.opt2;
+
+    // 힌트 처리 (난이도 3 전용)
+    const hintWrapper = document.getElementById('hint-wrapper');
+    const hintText = document.getElementById('hint-text');
+    hintText.style.display = 'none';
+
+    if (q.level === 3) {
+      hintWrapper.style.display = 'block';
+      // 해설의 첫 문장을 힌트로 제공
+      const hintSummary = q.explanation.split('.')[0] + '...';
+      hintText.innerText = `💡 [암행어사 밀서]: ${hintSummary}`;
+    } else {
+      hintWrapper.style.display = 'none';
+    }
+
+    // 버튼 초기화
+    const btns = document.querySelectorAll('.btn-option');
+    btns.forEach(b => {
+      b.className = 'btn-option';
+      b.disabled = false;
+    });
+
+    document.getElementById('explanation').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+  }
+
+  // 힌트 열기/닫기 토글
+  function toggleHint() {
+    const hintText = document.getElementById('hint-text');
+    hintText.style.display = (hintText.style.display === 'block') ? 'none' : 'block';
+  }
+
+  // ==========================================
+  // [5] 정답 판정 및 실시간 점수 반영
+  // ==========================================
+  function selectAnswer(userPick) {
+    const q = currentBatch[currentIndex];
+    const btns = document.querySelectorAll('.btn-option');
+    btns.forEach(b => b.disabled = true);
+
+    const isCorrect = (userPick === q.ans);
+    playFanfare(isCorrect);
+
+    if (isCorrect) {
+      btns[userPick - 1].classList.add('correct');
+      totalScore += 10;
+      batchCorrectCount++;
+    } else {
+      btns[userPick - 1].classList.add('wrong');
+      btns[q.ans - 1].classList.add('correct');
+    }
+
+    // 푼 문제 인덱스 저장 (하이패스 중복 출제 원천 차단)
+    solvedIndexes.add(q.originalIndex);
+    localStorage.setItem('solved_indices', JSON.stringify(Array.from(solvedIndexes)));
+    localStorage.setItem('user_history_score', totalScore.toString());
+
+    // 해설 표시
+    const expBox = document.getElementById('explanation');
+    expBox.innerHTML = `<strong>${isCorrect ? '✅ 급제 (정답)!' : '❌ 낙방 (오답)!'}</strong><br>${q.explanation}`;
+    expBox.style.display = 'block';
+
+    updateProfileUI();
+
+    const nextBtn = document.getElementById('next-btn');
+    if (currentIndex < 4) {
+      nextBtn.innerText = "다음 문제 풀기 ➜";
+    } else {
+      nextBtn.innerText = "🏁 채점 결과 및 과거 급제 확인";
+    }
+    nextBtn.style.display = 'block';
+  }
+
+  function nextQuestion() {
+    if (currentIndex < 4) {
+      currentIndex++;
+      renderQuestion();
+    } else {
+      showResultModal();
+    }
+  }
+
+  // ==========================================
+  // [6] 결과 모달 및 무한 하이패스 전환
+  // ==========================================
+  function showResultModal() {
+    const modal = document.getElementById('result-modal');
+    const scoreText = document.getElementById('modal-score-text');
+    const rankAlert = document.getElementById('modal-rank-alert');
+
+    scoreText.innerText = `이번 과거 5문제 중 ${batchCorrectCount}문제 급제! (+${batchCorrectCount * 10}점)`;
+    
+    const rankObj = getRankTitle(totalScore);
+    rankAlert.innerHTML = `현재 관직: <strong>${rankObj.title}</strong><br>총 평정 점수: ${totalScore}점`;
+
+    modal.style.display = 'flex';
+  }
+
+  // 🔥 핵심: 공유 없이 다음 5문제를 즉시 로딩하는 하이패스 함수
+  function continueHiPass() {
+    document.getElementById('result-modal').style.display = 'none';
+    startNewBatch();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 카카오톡 / 외부 공유
+  function shareQuiz() {
+    const shareText = `[조선 과거시험] 나의 품계는 '${getRankTitle(totalScore).title}' (${totalScore}점)! 당신도 전국 8도를 정복할 수 있겠소?`;
+    if (navigator.share) {
+      navigator.share({
+        title: '조선 과거시험: 영토 평정전',
+        text: shareText,
+        url: window.location.href
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(`${shareText}\n${window.location.href}`).then(() => {
+        alert("시험지 링크가 복사되었습니다. 단톡방에 붙여넣어 겨뤄보세요!");
       });
-
-      document.getElementById('explanation-box').style.display = 'none';
-      document.getElementById('next-btn').style.display = 'none';
-      document.getElementById('hint-btn').style.display = 'block';
     }
+  }
 
-    function selectOption(selectedIndex, btnElement) {
-      if (isAnswered) return;
-      isAnswered = true;
+  // 품계 및 8도 점령 UI 업데이트
+  function updateProfileUI() {
+    document.getElementById('user-score').innerText = totalScore;
+    const rank = getRankTitle(totalScore);
+    document.getElementById('user-rank').innerText = rank.title;
 
-      const data = quizData[currentIdx];
-      const buttons = document.querySelectorAll('.option-btn');
-      const pointPerQuestion = Math.round(100 / quizData.length);
+    // 50점마다 1개 도씩 평정 (최대 8도)
+    const conquered = Math.min(8, Math.floor(totalScore / 50));
+    document.getElementById('conquered-count').innerText = `${conquered} / 8도 평정`;
 
-      if (selectedIndex === data.answer) {
-        btnElement.classList.add('correct');
-        score += pointPerQuestion;
-
-        const mastered = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]");
-        if (!mastered.includes(data.id)) {
-          mastered.push(data.id);
-          localStorage.setItem(STORAGE_SOLVED, JSON.stringify(mastered));
-        }
-
-        let exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-        localStorage.setItem(STORAGE_EXP, exp + 1);
+    const tags = document.querySelectorAll('.p-tag');
+    tags.forEach((tag, idx) => {
+      if (idx < conquered) {
+        tag.classList.add('conquered');
       } else {
-        btnElement.classList.add('wrong');
-        buttons[data.answer].classList.add('correct');
+        tag.classList.remove('conquered');
       }
+    });
+  }
 
-      updateProfileUI();
-
-      const expBox = document.getElementById('explanation-box');
-      expBox.innerText = data.explanation;
-      expBox.style.display = 'block';
-
-      const nextBtn = document.getElementById('next-btn');
-      nextBtn.innerText = (currentIdx === quizData.length - 1) ? "과거 결과 보러 가기" : "다음 문제 풀기";
-      nextBtn.style.display = 'block';
+  function getRankTitle(score) {
+    let current = RANKS[0];
+    for (let r of RANKS) {
+      if (score >= r.score) current = r;
+      else break;
     }
+    return current;
+  }
 
-    function openHintAction() {
-      alert("🎬 20초 실록 영상 힌트가 곧 공개됩니다!\n현재 채널에서 핵심만 쏙 뽑은 역사 쇼츠 영상을 준비 중입니다.");
-    }
-
-    function nextQuestion() {
-      currentIdx++;
-      if (currentIdx < quizData.length) {
-        renderQuestion();
-      } else {
-        showResult();
-      }
-    }
-
-    function showResult() {
-      document.getElementById('quiz-area').style.display = 'none';
-      const resultBox = document.getElementById('result-box');
-      resultBox.style.display = 'block';
-
-      if (score > 100) score = 100;
-      document.getElementById('final-score').innerText = `${score}점`;
-      localStorage.setItem(STORAGE_LAST_SCORE, score.toString());
-
-      const currentExp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-      const oldRank = getRank(initialExp);
-      const newRank = getRank(currentExp);
-
-      renderJoseonMap(newRank);
-
-      if (newRank.title !== oldRank.title) {
-        playFanfareSound();
-        const edictBox = document.getElementById('royal-edict');
-        const edictText = document.getElementById('edict-text');
-        edictText.innerHTML = `수험생은 역사 상식에 통달하였으므로,<br>이에 <strong>[${newRank.tag}] ${newRank.title}</strong>에 제수(除授)하며<br><strong>[${newRank.desc}]</strong>의 영토 권한을 부여하노라!`;
-        edictBox.style.display = 'block';
-      }
-
-      let comment = "";
-      if (score === 100) comment = "장원급제입니다! 틀린 문제 없이 완벽하게 통과하셨습니다.";
-      else if (score >= 60) comment = "선방하셨습니다! 틀린 문제는 다음 판에 복습 문제로 다시 출제됩니다.";
-      else comment = "낙방의 고배를 마셨군요. 내일 다시 도전하여 품계를 높여보세요!";
-
-      document.getElementById('result-comment').innerText = comment;
-
-      const masteredCount = JSON.parse(localStorage.getItem(STORAGE_SOLVED) || "[]").length;
-      document.getElementById('review-info').innerHTML = `💡 총 ${totalQuestionsCount}문제 중 <strong>${masteredCount}문제를 완전 통과</strong>하셨습니다.`;
-
-      if (currentPlayStage === 'base') {
-        localStorage.setItem(STORAGE_DAILY_STAGE, 'base_done');
-        document.getElementById('bonus-action-area').style.display = 'block';
-      } else {
-        localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_done');
-        document.getElementById('daily-complete-area').style.display = 'block';
-      }
-    }
-
-    function getValidDisplayScore() {
-      const saved = localStorage.getItem(STORAGE_LAST_SCORE);
-      if (saved && parseInt(saved, 10) > 0) return parseInt(saved, 10);
-      if (score > 0) return score;
-      return 100;
-    }
-
-    function triggerShareForBonus() {
-      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-      const rank = getRank(exp);
-      const displayScore = getValidDisplayScore();
-      const challengeUrl = `${window.location.origin}${window.location.pathname}?r=${rank.id}&s=${displayScore}`;
-      
-      const shareText = 
-`📜 [조선 과거시험 보너스 초대]
-나의 품계: [${rank.tag}] ${rank.title} (${displayScore}점 달성)
-영토 장악: 조선 8도 중 ${rank.territories.length}도 평정!
-
-"내가 오늘 거둔 성적과 관할지를 넘볼 자가 있는가?"
-지금 도전하여 당신의 조선 관직과 영토를 확인하라!
-
-👉 과거시험 치러 가기:
-${challengeUrl}`;
-
-      if (navigator.share) {
-        navigator.share({
-          title: '오늘의 역사 1분 퀴즈',
-          text: shareText,
-          url: challengeUrl
-        })
-        .then(() => {
-          localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
-          alert('🎉 공유가 완료되어 오늘의 보너스 5문제가 해금되었습니다!');
-          location.reload();
-        })
-        .catch(() => {});
-      } else {
-        navigator.clipboard.writeText(shareText).then(() => {
-          localStorage.setItem(STORAGE_DAILY_STAGE, 'bonus_unlocked');
-          alert('🎉 내 품계와 영토 기록이 담긴 링크가 복사되었습니다!\n카카오톡 대화방에 붙여넣어 공유를 완료하면 보너스 5문제가 열립니다.');
-          location.reload();
-        });
-      }
-    }
-
-    function shareQuiz() {
-      const exp = parseInt(localStorage.getItem(STORAGE_EXP) || "0", 10);
-      const rank = getRank(exp);
-      const displayScore = getValidDisplayScore();
-      const challengeUrl = `${window.location.origin}${window.location.pathname}?r=${rank.id}&s=${displayScore}`;
-
-      const fullShareMessage = 
-`📜 [조선 과거시험 급제 통보]
-나의 품계: [${rank.tag}] ${rank.title} (${displayScore}점 / 누적 ${exp}문항 급제)
-관할 영토: 8도 중 [${rank.territories.length}도 평정] (${rank.desc})
-
-"감히 내 관직과 영토를 넘볼 자가 있는가?"
-지금 바로 과거에 응시하여 나와 겨뤄보아라!
-
-👇 과거시험 응시하기
-${challengeUrl}`;
-
-      if (navigator.share) {
-        navigator.share({
-          title: `[조선 과거시험] 나의 품계: ${rank.title}`,
-          text: fullShareMessage,
-          url: challengeUrl
-        }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(fullShareMessage).then(() => {
-          alert(`🎉 [${rank.title}] 품계 및 영토 자랑 문구가 복사되었습니다!\n카카오톡 대화방에 [붙여넣기] 하시면 멋지게 전송됩니다.`);
-        });
-      }
-    }
-
-    // --- 🔒 [암행어사 마스터 키 로직] ---
-    function handleSecretTap() {
-      secretTapCount++;
-      clearTimeout(secretTapTimer);
-      secretTapTimer = setTimeout(() => {
-        secretTapCount = 0;
-      }, 1500);
-
-      if (secretTapCount >= 5) {
-        secretTapCount = 0;
-        document.getElementById('admin-modal').style.display = 'flex';
-      }
-    }
-
-    function closeSecretPanel() {
-      document.getElementById('admin-modal').style.display = 'none';
-    }
-
-    function adminSetRank(targetExp) {
-      localStorage.setItem(STORAGE_EXP, targetExp.toString());
-      alert(`👑 경험치가 ${targetExp}점(으)로 설정되었습니다!\n새로고침 후 반영됩니다.`);
-      location.reload();
-    }
-
-    function adminResetDaily() {
-      localStorage.removeItem(STORAGE_DAILY_DATE);
-      localStorage.removeItem(STORAGE_DAILY_STAGE);
-      alert('⚡ 오늘의 응시 제한이 즉시 초기화되었습니다!\n새로운 시험을 즉시 치를 수 있습니다.');
-      location.reload();
-    }
-
-    function adminClearAll() {
-      if (confirm('정말로 모든 누적 경험치와 통과 기록을 초기화하시겠습니까? (초야의 백성으로 복귀)')) {
-        localStorage.clear();
-        alert('🧹 모든 데이터가 깨끗이 초기화되었습니다.');
-        location.reload();
-      }
-    }
-
-    fetchQuizFromSheet();
-  </script>
+  // 실행 진입
+  window.addEventListener('DOMContentLoaded', initData);
+</script>
 </body>
 </html>
