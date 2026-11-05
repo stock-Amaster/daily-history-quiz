@@ -6,7 +6,7 @@
   <title>조선 과거시험: 8도 영토 정복기</title>
   
   <meta property="og:title" content="조선 과거시험: 전국 8도 역사 정복전">
-  <meta property="og:description" content="상위 1%만 통과한다는 조선 과거시험! 과락을 피해 정1품 영의정까지 진격하라!">
+  <meta property="og:description" content="700문항을 모두 격파하고 천하통일 영의정에 등극하라!">
   <meta property="og:type" content="website">
 
   <style>
@@ -67,14 +67,20 @@
 
     .rank-bar {
       display: flex;
-      justify-content: space-around;
-      align-items: center;
+      flex-direction: column;
+      gap: 6px;
       margin-top: 10px;
-      padding: 8px 12px;
+      padding: 10px 12px;
       background: #f1ede2;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: bold;
+    }
+
+    .rank-bar-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
     }
 
     .rank-badge {
@@ -84,6 +90,22 @@
       background: #fff;
       border: 1px solid var(--border-color);
       border-radius: 4px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #ddd5c7;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d4af37, #b22222);
+      transition: width 0.3s ease;
     }
 
     .map-status-card {
@@ -115,6 +137,7 @@
       border: 1px solid #ccc;
       color: #999;
       background: #fafafa;
+      transition: all 0.2s ease;
     }
 
     .p-tag.conquered {
@@ -122,6 +145,7 @@
       background: #ffe8e8;
       color: var(--point-color);
       font-weight: bold;
+      box-shadow: 0 1px 3px rgba(178,34,34,0.2);
     }
 
     .quiz-card {
@@ -255,7 +279,6 @@
       display: none;
     }
 
-    /* 결과 모달창 */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -291,7 +314,7 @@
     }
 
     .score-summary {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       margin: 14px 0;
       font-weight: bold;
     }
@@ -302,8 +325,9 @@
       padding: 10px;
       border-radius: 8px;
       margin-bottom: 16px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: #8d6e63;
+      line-height: 1.5;
     }
 
     .modal-actions {
@@ -374,8 +398,17 @@
   <header>
     <h1>📜 조선 과거시험: 영토 평정전</h1>
     <div class="rank-bar">
-      <div>현재 품계: <span id="user-rank" class="rank-badge">종9품 참봉</span></div>
-      <div>평정 점수: <span id="user-score" style="color:var(--point-color);">0</span>점</div>
+      <div class="rank-bar-row">
+        <div>현재 품계: <span id="user-rank" class="rank-badge">종9품 참봉</span></div>
+        <div>총점: <span id="user-score" style="color:var(--point-color);">0</span>점</div>
+      </div>
+      <div class="rank-bar-row" style="font-size:0.8rem; color:#666;">
+        <span>완주 진도: <strong id="progress-count" style="color:#2c251e;">0</strong> / <span id="total-q-count">700</span>문항</span>
+        <span id="progress-percent" style="font-weight:bold; color:var(--point-color);">0.0%</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
     </div>
   </header>
 
@@ -397,7 +430,7 @@
   </div>
 
   <div class="quiz-card" id="quiz-box">
-    <div id="loading" class="loader">구글 시트에서 700문항을 불러오는 중...</div>
+    <div id="loading" class="loader">구글 시트에서 문제은행을 불러오는 중...</div>
     
     <div id="quiz-content" style="display: none;">
       <div class="quiz-meta">
@@ -453,22 +486,22 @@
 </div>
 
 <script>
-  // [1] 구글 스프레드시트 700문항 연동 & 유저기록 수신 새 웹 앱 URL
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?gid=0&single=true&output=csv";
   const LOG_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGuWEixog5rQRSEFiXwzYqXf9Cl4wo8qQxHMu_QcGFROE1qfapLcoKbbMOO1myiARB/exec";
 
+  // 700문항 진도율(%)에 맞춘 11단계 품계
   const RANKS = [
-    { score: 0, title: "평민 (과거 준비생)" },
-    { score: 20, title: "종9품 참봉" },
-    { score: 50, title: "정8품 사서" },
-    { score: 90, title: "종7품 박사" },
-    { score: 140, title: "정6품 전적" },
-    { score: 200, title: "정5품 홍문관 교리" },
-    { score: 270, title: "종4품 서해도 군수" },
-    { score: 350, title: "정3품 당상관 동부승지" },
-    { score: 440, title: "종2품 경기 관찰사" },
-    { score: 540, title: "정2품 판서" },
-    { score: 650, title: "정1품 영의정 (천하통일)" }
+    { ratio: 0.00, title: "평민 (과거 준비생)" },
+    { ratio: 0.05, title: "종9품 참봉" },
+    { ratio: 0.12, title: "정8품 사서" },
+    { ratio: 0.22, title: "종7품 박사" },
+    { ratio: 0.35, title: "정6품 전적" },
+    { ratio: 0.50, title: "정5품 홍문관 교리" },
+    { ratio: 0.65, title: "종4품 서해도 군수" },
+    { ratio: 0.78, title: "정3품 당상관 동부승지" },
+    { ratio: 0.88, title: "종2품 경기 관찰사" },
+    { ratio: 0.95, title: "정2품 판서" },
+    { ratio: 1.00, title: "정1품 영의정 (천하통일)" }
   ];
 
   let allQuestions = [];
@@ -479,7 +512,7 @@
   let solvedIndexes = new Set(JSON.parse(localStorage.getItem('solved_indices') || '[]'));
   let audioCtx = null;
 
-  // 유저 고유 닉네임/식별자 (브라우저 최초 접속 시 자동 발급)
+  // 브라우저 보관함에서 고유 유저 ID 유지
   let userUniqueId = localStorage.getItem('user_unique_id');
   if (!userUniqueId) {
     userUniqueId = '선비_' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -525,16 +558,18 @@
       const response = await fetch(SHEET_CSV_URL);
       const csvText = await response.text();
       parseCSV(csvText);
-      updateProfileUI();
 
       if (allQuestions.length === 0) {
         loadFallbackQuestions();
       }
 
+      document.getElementById('total-q-count').innerText = allQuestions.length;
+      updateProfileUI();
       startNewBatch();
     } catch (err) {
-      console.warn("구글 시트 연동 대기 중", err);
+      console.warn("시트 연동 대기 중", err);
       loadFallbackQuestions();
+      document.getElementById('total-q-count').innerText = allQuestions.length;
       updateProfileUI();
       startNewBatch();
     }
@@ -586,8 +621,9 @@
 
     let available = allQuestions.filter(q => !solvedIndexes.has(q.originalIndex));
 
+    // 700문제를 모두 완주했을 때의 리셋 처리
     if (available.length < 5) {
-      alert("장원급제! 준비된 모든 과거 문제를 섭렵하셨습니다. 문제를 처음부터 다시 섞습니다.");
+      alert("🎉 장원급제! 조선 과거시험 700문항을 모두 격파하셨습니다. 명예의 전당을 위해 문제를 다시 섞습니다.");
       solvedIndexes.clear();
       localStorage.removeItem('solved_indices');
       available = [...allQuestions];
@@ -653,6 +689,7 @@
       btns[q.ans - 1].classList.add('correct');
     }
 
+    // 푼 문제 고유 인덱스 기록 (진도율 반영)
     solvedIndexes.add(q.originalIndex);
     localStorage.setItem('solved_indices', JSON.stringify(Array.from(solvedIndexes)));
     localStorage.setItem('user_history_score', totalScore.toString());
@@ -681,9 +718,6 @@
     }
   }
 
-  // ==========================================
-  // [결과 모달 및 구글 시트 유저기록 무조건 전송]
-  // ==========================================
   function showResultModal() {
     const modal = document.getElementById('result-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -692,17 +726,19 @@
     const hipassBtn = document.getElementById('hipass-btn');
     const retryBtn = document.getElementById('retry-btn');
 
-    const rankObj = getRankTitle(totalScore);
-    const conquered = Math.min(8, Math.floor(totalScore / 50));
+    const totalQ = allQuestions.length || 700;
+    const progressRatio = solvedIndexes.size / totalQ;
+    const rankObj = getRankTitle(progressRatio);
+    const conquered = Math.min(8, Math.floor(progressRatio * 8));
 
-    // 구글 시트로 성적 데이터 전송 (CORS 차단 100% 우회 핑 방식)
-    sendResultToGoogleSheet(batchCorrectCount, totalScore, rankObj.title, conquered);
+    // 구글 시트로 실시간 전송 (진도율 포함)
+    sendResultToGoogleSheet(batchCorrectCount, totalScore, rankObj.title, conquered, solvedIndexes.size, totalQ);
 
     if (batchCorrectCount >= 3) {
       modalTitle.innerText = "🎉 축 급제! 진격 성공";
       modalTitle.style.color = "var(--point-color)";
       scoreText.innerHTML = `5문제 중 <strong>${batchCorrectCount}문제</strong> 급제! (+${batchCorrectCount * 10}점 획득)`;
-      rankAlert.innerHTML = `현재 관직: <strong>${rankObj.title}</strong><br>당당히 합격 기준(3개)을 통과했소!`;
+      rankAlert.innerHTML = `현재 관직: <strong>${rankObj.title}</strong><br>누적 정복 진도: <strong>${solvedIndexes.size} / ${totalQ}문항</strong> (${(progressRatio * 100).toFixed(1)}%)`;
       
       hipassBtn.style.display = 'flex';
       retryBtn.style.display = 'none';
@@ -719,18 +755,18 @@
     modal.style.display = 'flex';
   }
 
-  // 브라우저의 모든 보안 차단을 100% 뚫고 시트에 꽂아넣는 이미지 핑 전송 함수
-  function sendResultToGoogleSheet(correctCount, total, rank, conqueredCount) {
+  function sendResultToGoogleSheet(correctCount, total, rank, conqueredCount, solvedCount, totalQ) {
     if (!LOG_SCRIPT_URL) return;
 
     try {
+      const progressText = `${solvedCount}/${totalQ}제 (${((solvedCount/totalQ)*100).toFixed(1)}%)`;
       const params = new URLSearchParams({
         userId: userUniqueId,
         batchResult: `${correctCount}/5 (${correctCount >= 3 ? '급제' : '과락'})`,
         totalScore: total,
-        rankTitle: rank,
+        rankTitle: `${rank} [${progressText}]`,
         conqueredCount: `${conqueredCount}/8도 평정`,
-        _t: new Date().getTime() // 캐시 방지용 타임스탬프
+        _t: new Date().getTime()
       });
 
       const pingImg = new Image();
@@ -753,7 +789,11 @@
   }
 
   function shareQuiz() {
-    const shareText = `[조선 과거시험] 나의 품계는 '${getRankTitle(totalScore).title}' (${totalScore}점)! 당신도 과락을 피해 전국 8도를 정복할 수 있겠소?`;
+    const totalQ = allQuestions.length || 700;
+    const progressRatio = solvedIndexes.size / totalQ;
+    const rankTitle = getRankTitle(progressRatio).title;
+
+    const shareText = `[조선 과거시험] 나의 관직은 '${rankTitle}' (${solvedIndexes.size}문항 격파)! 700문제를 모두 풀고 천하통일 영의정에 도전해보시오!`;
     if (navigator.share) {
       navigator.share({
         title: '조선 과거시험: 영토 평정전',
@@ -768,11 +808,21 @@
   }
 
   function updateProfileUI() {
+    const totalQ = allQuestions.length || 700;
+    const solvedCount = solvedIndexes.size;
+    const progressRatio = Math.min(1.0, solvedCount / totalQ);
+
     document.getElementById('user-score').innerText = totalScore;
-    const rank = getRankTitle(totalScore);
+    document.getElementById('progress-count').innerText = solvedCount;
+    document.getElementById('progress-percent').innerText = `${(progressRatio * 100).toFixed(1)}%`;
+    document.getElementById('progress-fill').style.width = `${progressRatio * 100}%`;
+
+    // 700문항 진도율 기반 품계 배정
+    const rank = getRankTitle(progressRatio);
     document.getElementById('user-rank').innerText = rank.title;
 
-    const conquered = Math.min(8, Math.floor(totalScore / 50));
+    // 700문항을 8등분(12.5%마다 1도씩 평정, 100% 도달 시 8도 올 클리어)
+    const conquered = Math.min(8, Math.floor(progressRatio * 8));
     document.getElementById('conquered-count').innerText = `${conquered} / 8도 평정`;
 
     const tags = document.querySelectorAll('.p-tag');
@@ -785,10 +835,10 @@
     });
   }
 
-  function getRankTitle(score) {
+  function getRankTitle(ratio) {
     let current = RANKS[0];
     for (let r of RANKS) {
-      if (score >= r.score) current = r;
+      if (ratio >= r.ratio) current = r;
       else break;
     }
     return current;
