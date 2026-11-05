@@ -556,7 +556,8 @@
 
   async function initData() {
     try {
-      const response = await fetch(SHEET_CSV_URL);
+      const cacheBuster = (SHEET_CSV_URL.includes("?") ? "&" : "?") + "_t=" + Date.now();
+      const response = await fetch(SHEET_CSV_URL + cacheBuster);
       if (!response.ok) throw new Error("네트워크 응답 오류");
       const csvText = await response.text();
       parseCSV(csvText);
@@ -578,9 +579,7 @@
   }
 
   function parseCSV(text) {
-    const lines = text.split(/
-|
-/);
+    const lines = text.split(/\r?\n/);
     allQuestions = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -615,7 +614,9 @@
     allQuestions = [
       { category: '조선 왕실', question: '조선시대 왕의 얼굴을 그린 초상화를 부르던 공식 명칭은?', opt1: '어진', opt2: '의궤', ans: 1, explanation: '왕의 얼굴은 어진(御眞)이라 칭하며 도화서 화원이 그렸습니다.', level: 1, qNum: 1 },
       { category: '삼국 영웅', question: '고구려 광개토대왕이 우리나라 최초로 독자 사용한 연호는?', opt1: '영락', opt2: '건원', ans: 1, explanation: '영원한 즐거움을 뜻하는 영락(永樂) 연호를 사용하여 천하관을 선포했습니다.', level: 2, qNum: 2 },
-      { category: '고려 왕조', question: '고려 숙종 때 은 한 근으로 한반도 지형을 본떠 만든 고액 은돈은?', opt1: '활구(은병)', opt2: '상평통보', ans: 1, explanation: '입구가 넓은 호병 모양의 활구는 귀족 관료들의 고액 거래용 은돈이었습니다.', level: 3, qNum: 3 }
+      { category: '고려 왕조', question: '고려 숙종 때 은 한 근으로 한반도 지형을 본떠 만든 고액 은돈은?', opt1: '활구(은병)', opt2: '상평통보', ans: 1, explanation: '입구가 넓은 호병 모양의 활구는 귀족 관료들의 고액 거래용 은돈이었습니다.', level: 3, qNum: 3 },
+      { category: '조선 과학', question: '조선 세종 때 장영실 등이 제작한 해시계의 이름은?', opt1: '앙부일구', opt2: '자격루', ans: 1, explanation: '가마솥 모양의 해시계는 앙부일구(仰釜日晷)입니다. 자격루는 물시계입니다.', level: 1, qNum: 4 },
+      { category: '조선 제도', question: '조선시대 지방 수령을 감찰하고 행정을 감독하던 최고 지방관은?', opt1: '관찰사(감사)', opt2: '암행어사', ans: 1, explanation: '8도에 파견된 최고 책임 관원은 종2품 관찰사(관찰사 겸 감사)였습니다.', level: 2, qNum: 5 }
     ];
   }
 
