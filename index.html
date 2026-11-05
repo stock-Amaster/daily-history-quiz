@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>조선 과거시험: 8도 영토 정복기</title>
   
-  <!-- 카카오톡 & SNS 공유 오픈그래프 (OG 태그) -->
   <meta property="og:title" content="조선 과거시험: 전국 8도 역사 정복전">
-  <meta property="og:description" content="상위 1%만 통과한다는 조선 과거시험! 당신의 역사 품계는 정1품 영의정일까?">
+  <meta property="og:description" content="상위 1%만 통과한다는 조선 과거시험! 과락을 피해 정1품 영의정까지 진격하라!">
   <meta property="og:type" content="website">
 
   <style>
@@ -49,7 +48,6 @@
       gap: 16px;
     }
 
-    /* 상단 헤더 & 품계 뱃지 */
     header {
       background: var(--paper-color);
       border: 2px solid var(--border-color);
@@ -88,7 +86,6 @@
       border-radius: 4px;
     }
 
-    /* 조선 8도 평정 진행도 */
     .map-status-card {
       background: var(--paper-color);
       border: 1px solid var(--border-color);
@@ -127,7 +124,6 @@
       font-weight: bold;
     }
 
-    /* 퀴즈 박스 (과거 시험지 스타일) */
     .quiz-card {
       background: var(--paper-color);
       border: 2px solid var(--border-color);
@@ -164,7 +160,6 @@
       word-break: keep-all;
     }
 
-    /* 힌트 버튼 (난이도 3 전용) */
     .hint-container {
       margin-bottom: 16px;
       display: none;
@@ -197,7 +192,6 @@
       border-left: 3px solid #d4af37;
     }
 
-    /* 선택지 버튼 (2지선다) */
     .options-grid {
       display: flex;
       flex-direction: column;
@@ -236,7 +230,6 @@
       color: #b71c1c !important;
     }
 
-    /* 실시간 해설창 */
     .explanation-box {
       margin-top: 16px;
       padding: 14px;
@@ -320,7 +313,7 @@
       margin-top: 18px;
     }
 
-    /* 하이패스 무제한 버튼 스타일 */
+    /* 하이패스 통과 버튼 (급제 시) */
     .btn-hipass {
       background: #1e272e;
       color: #ffd32a;
@@ -340,6 +333,22 @@
 
     .btn-hipass:active {
       transform: scale(0.98);
+    }
+
+    /* 재시 치르기 버튼 (낙방 시) */
+    .btn-retry {
+      background: #c0392b;
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
     }
 
     .btn-share {
@@ -372,7 +381,6 @@
     </div>
   </header>
 
-  <!-- 8도 점령 현황 카드 -->
   <div class="map-status-card">
     <div class="map-status-title">
       <span>🗺️ 전국 8도 평정 상태</span>
@@ -390,7 +398,6 @@
     </div>
   </div>
 
-  <!-- 퀴즈 영역 -->
   <div class="quiz-card" id="quiz-box">
     <div id="loading" class="loader">구글 시트에서 700문항을 불러오는 중...</div>
     
@@ -402,7 +409,6 @@
 
       <div class="quiz-question" id="q-text">질문이 여기에 표시됩니다.</div>
 
-      <!-- 힌트 버튼 (난이도 3 전용) -->
       <div class="hint-container" id="hint-wrapper">
         <button class="btn-hint" onclick="toggleHint()">
           📜 암행어사 밀서 (난이도 3 특별 힌트 보기)
@@ -410,7 +416,6 @@
         <div class="hint-content" id="hint-text"></div>
       </div>
 
-      <!-- 2지선다 버튼 -->
       <div class="options-grid">
         <button class="btn-option" onclick="selectAnswer(1)">
           <span id="opt-1-text">보기 1</span>
@@ -420,10 +425,8 @@
         </button>
       </div>
 
-      <!-- 정답 해설 -->
       <div class="explanation-box" id="explanation"></div>
 
-      <!-- 다음 문항 버튼 -->
       <button class="btn-next" id="next-btn" onclick="nextQuestion()">다음 문항으로 ➜</button>
     </div>
   </div>
@@ -432,31 +435,32 @@
 <!-- 과거시험 결과 모달 -->
 <div class="modal-overlay" id="result-modal">
   <div class="modal-content">
-    <div class="modal-title">🏁 과거시험 채점 결과</div>
-    <div class="score-summary" id="modal-score-text">5문제 중 5문제 급제!</div>
+    <div class="modal-title" id="modal-title">🏁 과거시험 채점 결과</div>
+    <div class="score-summary" id="modal-score-text">5문제 중 3문제 급제!</div>
     <div class="rank-up-alert" id="modal-rank-alert">축하합니다! 새로운 관직에 제수되었습니다.</div>
     
     <div class="modal-actions">
-      <!-- 🔥 무한 하이패스 버튼 (공유 없이 다음 5문제 즉시 도전) -->
-      <button class="btn-hipass" onclick="continueHiPass()">
-        ⚡ 쉼 없는 과거시험 (공유 없이 다음 5문제 즉시 도전)
+      <!-- 3문제 이상 맞혔을 때 노출 (진격 허용) -->
+      <button class="btn-hipass" id="hipass-btn" onclick="continueHiPass()">
+        ⚡ 쉼 없는 과거시험 (합격! 다음 5문제 진격)
       </button>
 
-      <!-- 친구 공유 버튼 -->
+      <!-- 2문제 이하로 낙방했을 때 노출 (진격 차단 및 재도전) -->
+      <button class="btn-retry" id="retry-btn" onclick="retryBatch()" style="display: none;">
+        🔄 낙방이오! 재시 치르기 (새로운 5문제로 재도전)
+      </button>
+
       <button class="btn-share" onclick="shareQuiz()">
-        📢 시험지 카톡 공유하고 영토 자랑하기
+        📢 시험지 카톡 공유하고 친구와 겨루기
       </button>
     </div>
   </div>
 </div>
 
 <script>
-  // ==========================================
-  // [1] 구글 스프레드시트 CSV 실제 연동 주소 반영
-  // ==========================================
+  // 대표님의 구글 스프레드시트 CSV 실제 링크 연동
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?gid=0&single=true&output=csv";
 
-  // 품계 테이블 (점수에 따라 자동 승급)
   const RANKS = [
     { score: 0, title: "평민 (과거 준비생)" },
     { score: 20, title: "종9품 참봉" },
@@ -471,7 +475,6 @@
     { score: 650, title: "정1품 영의정 (천하통일)" }
   ];
 
-  // 상태 변수
   let allQuestions = [];
   let currentBatch = [];
   let currentIndex = 0;
@@ -480,9 +483,6 @@
   let solvedIndexes = new Set(JSON.parse(localStorage.getItem('solved_indices') || '[]'));
   let audioCtx = null;
 
-  // ==========================================
-  // [2] Web Audio 국악 실록 효과음 (팡파레)
-  // ==========================================
   function playFanfare(isSuccess) {
     try {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -517,9 +517,6 @@
     } catch(e) {}
   }
 
-  // ==========================================
-  // [3] 초기 구글 시트 데이터 로드
-  // ==========================================
   async function initData() {
     try {
       const response = await fetch(SHEET_CSV_URL);
@@ -533,7 +530,7 @@
 
       startNewBatch();
     } catch (err) {
-      console.warn("구글 시트 연동 대기 중 - 내장 기본 문제로 가동합니다.", err);
+      console.warn("구글 시트 연동 대기 중", err);
       loadFallbackQuestions();
       updateProfileUI();
       startNewBatch();
@@ -580,9 +577,6 @@
     ];
   }
 
-  // ==========================================
-  // [4] 하이패스 5문항 선정 및 무한 출제 로직
-  // ==========================================
   function startNewBatch() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('quiz-content').style.display = 'block';
@@ -639,9 +633,6 @@
     hintText.style.display = (hintText.style.display === 'block') ? 'none' : 'block';
   }
 
-  // ==========================================
-  // [5] 정답 판정 및 실시간 점수 반영
-  // ==========================================
   function selectAnswer(userPick) {
     const q = currentBatch[currentIndex];
     const btns = document.querySelectorAll('.btn-option');
@@ -688,29 +679,58 @@
   }
 
   // ==========================================
-  // [6] 결과 모달 및 무한 하이패스 전환
+  // [과락 컷오프 판정: 3개 이상 급제 vs 낙방]
   // ==========================================
   function showResultModal() {
     const modal = document.getElementById('result-modal');
+    const modalTitle = document.getElementById('modal-title');
     const scoreText = document.getElementById('modal-score-text');
     const rankAlert = document.getElementById('modal-rank-alert');
+    const hipassBtn = document.getElementById('hipass-btn');
+    const retryBtn = document.getElementById('retry-btn');
 
-    scoreText.innerText = `이번 과거 5문제 중 ${batchCorrectCount}문제 급제! (+${batchCorrectCount * 10}점)`;
-    
     const rankObj = getRankTitle(totalScore);
-    rankAlert.innerHTML = `현재 관직: <strong>${rankObj.title}</strong><br>총 평정 점수: ${totalScore}점`;
+
+    // 3개 이상 맞히면 진격 성공
+    if (batchCorrectCount >= 3) {
+      modalTitle.innerText = "🎉 축 급제! 진격 성공";
+      modalTitle.style.color = "var(--point-color)";
+      scoreText.innerHTML = `5문제 중 <strong>${batchCorrectCount}문제</strong> 급제! (+${batchCorrectCount * 10}점 획득)`;
+      rankAlert.innerHTML = `현재 관직: <strong>${rankObj.title}</strong><br>당당히 합격 기준(3개)을 통과했소!`;
+      
+      hipassBtn.style.display = 'flex';
+      retryBtn.style.display = 'none';
+    } 
+    // 2개 이하 맞히면 과락(낙방)
+    else {
+      modalTitle.innerText = "⚠️ 과락 낙방! 진격 차단";
+      modalTitle.style.color = "#c0392b";
+      scoreText.innerHTML = `5문제 중 <strong>${batchCorrectCount}문제</strong> 급제 (과락)<br><span style="font-size:0.85rem; color:#7f8c8d;">최소 3문제 이상 맞혀야 다음으로 진격할 수 있소.</span>`;
+      rankAlert.innerHTML = `현재 관직: <strong>${rankObj.title}</strong><br>학문 수양이 부족하니 재시를 치르시오!`;
+      
+      hipassBtn.style.display = 'none';
+      retryBtn.style.display = 'flex';
+    }
 
     modal.style.display = 'flex';
   }
 
+  // 합격 시 다음 5문제 진격
   function continueHiPass() {
     document.getElementById('result-modal').style.display = 'none';
     startNewBatch();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // 낙방 시 재시 치르기
+  function retryBatch() {
+    document.getElementById('result-modal').style.display = 'none';
+    startNewBatch();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   function shareQuiz() {
-    const shareText = `[조선 과거시험] 나의 품계는 '${getRankTitle(totalScore).title}' (${totalScore}점)! 당신도 전국 8도를 정복할 수 있겠소?`;
+    const shareText = `[조선 과거시험] 나의 품계는 '${getRankTitle(totalScore).title}' (${totalScore}점)! 당신도 과락을 피해 전국 8도를 정복할 수 있겠소?`;
     if (navigator.share) {
       navigator.share({
         title: '조선 과거시험: 영토 평정전',
