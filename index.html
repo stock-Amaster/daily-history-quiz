@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>오늘의 역사 1분 퀴즈 | 조선 과거시험</title>
 
-  <!-- 카카오톡 / SNS 공유용 기본 메타태그 (Open Graph) -->
+  <!-- 카카오톡 / SNS 공유용 메타태그 (Open Graph) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://stock-amaster.github.io/daily-history-quiz/">
   <meta property="og:title" content="오늘의 역사 1분 퀴즈 | 나의 조선 벼슬은 몇 품일까?">
@@ -104,6 +104,8 @@
       border-radius: 9999px;
       letter-spacing: -0.2px;
       display: inline-block;
+      cursor: pointer;
+      user-select: none;
     }
 
     .user-title {
@@ -205,6 +207,26 @@
       background-color: #dc2626 !important;
       border-color: #f87171 !important;
       color: #ffffff !important;
+    }
+
+    /* 20초 실록 영상 힌트 버튼 스타일 */
+    .hint-btn {
+      background-color: rgba(239, 68, 68, 0.12);
+      border: 1px dashed #ef4444;
+      color: #fca5a5;
+      padding: 11px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      margin-top: 2px;
+    }
+
+    .hint-btn:hover {
+      background-color: rgba(239, 68, 68, 0.22);
+      color: #ffffff;
     }
 
     .explanation-box {
@@ -392,6 +414,50 @@
       line-height: 1.45;
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
+
+    /* 암행어사 마스터 키 패널 모달 */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .admin-content {
+      background: #1e293b;
+      border: 2px solid #f59e0b;
+      border-radius: 18px;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+    }
+
+    .admin-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fde68a;
+      text-align: center;
+      margin-bottom: 14px;
+      border-bottom: 1px dashed #334155;
+      padding-bottom: 8px;
+    }
+
+    .admin-btn {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -405,7 +471,8 @@
 
     <div class="user-profile-bar">
       <div>
-        <span class="rank-tag" id="user-rank-tag">신분</span>
+        <!-- 이 신분 태그를 5번 연속 클릭하면 암행어사 마스터 키가 열립니다 -->
+        <span class="rank-tag" id="user-rank-tag" onclick="handleSecretTap()">신분</span>
         <span class="user-title" id="user-title">초야의 백성</span>
       </div>
       <div class="rank-subtext" id="user-duty-text">과거 준비생</div>
@@ -427,6 +494,10 @@
       </div>
 
       <div class="options-group" id="options-group" style="margin-top: 14px;"></div>
+      
+      <!-- 🎬 20초 실록 영상 힌트 버튼 -->
+      <button class="hint-btn" id="hint-btn" onclick="openHintAction()">🎬 20초 실록 영상 힌트 (곧 공개)</button>
+
       <div class="explanation-box" id="explanation-box"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 풀기</button>
     </div>
@@ -495,6 +566,18 @@
     <div class="ad-placeholder">광고 배너 영역 (하단)</div>
   </div>
 
+  <!-- 🔒 대표님 전용 암행어사 마스터 키 패널 -->
+  <div class="admin-modal" id="admin-modal" onclick="closeSecretPanel(event)">
+    <div class="admin-content" onclick="event.stopPropagation()">
+      <div class="admin-title">👑 암행어사 마스터 키 (개발/테스트)</div>
+      <button class="admin-btn" style="background: #f59e0b; color: #000;" onclick="adminSetRank(500)">👑 [만렙] 조선 국왕 즉시 승급</button>
+      <button class="admin-btn" style="background: #3b82f6; color: #fff;" onclick="adminSetRank(380)">📜 [정1품] 영의정 제수</button>
+      <button class="admin-btn" style="background: #10b981; color: #fff;" onclick="adminResetDaily()">⚡ 오늘 응시 제한 즉시 리셋 (무한응시)</button>
+      <button class="admin-btn" style="background: #64748b; color: #fff;" onclick="adminClearAll()">🧹 모든 기록 초기화 (초야의 백성 복귀)</button>
+      <button class="admin-btn" style="background: #334155; color: #cbd5e1; margin-top: 10px;" onclick="closeSecretPanel()">닫기</button>
+    </div>
+  </div>
+
   <script>
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?output=csv";
     const QUIZ_COUNT = 5;
@@ -512,6 +595,10 @@
     let totalQuestionsCount = 0;
     let initialExp = 0;
     let currentPlayStage = 'base';
+
+    // 마스터 키 연타 감지 변수
+    let secretTapCount = 0;
+    let secretTapTimer = null;
 
     const RANKS = [
       { id: 10, minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan','hamgyong'], capital: 'gyeonggi', desc: "팔도강산 완전 통치" },
@@ -703,7 +790,6 @@
           const opt2 = row[3];
           const answerNum = parseInt(row[4], 10);
           const explanation = row[5] || "";
-          // G열 난이도 추출 (1: 초급, 2: 중급, 3: 고급)
           const level = (row[6] && parseInt(row[6], 10)) ? parseInt(row[6], 10) : 1;
 
           if (question && opt1 && opt2 && (answerNum === 1 || answerNum === 2)) {
@@ -730,16 +816,13 @@
           pool = allQuestions;
         }
 
-        // [품계별 맞춤형 난이도 추출 로직]
+        // [스마트 난이도 배정]
         let targetLevels = [];
         if (initialExp < 10) {
-          // 초보 (백성~훈도생): 초급(1) 4개 + 중급(2) 1개
           targetLevels = [1, 1, 1, 1, 2];
         } else if (initialExp < 85) {
-          // 중수 (진사~박사): 초급(1) 2개 + 중급(2) 2개 + 고급(3) 1개
           targetLevels = [1, 1, 2, 2, 3];
         } else {
-          // 고수 (군수 이상): 중급(2) 2개 + 고급(3) 3개
           targetLevels = [2, 2, 3, 3, 3];
         }
 
@@ -750,7 +833,6 @@
             const picked = matched[Math.floor(Math.random() * matched.length)];
             selectedPool.push(picked);
           } else {
-            // 해당 난이도 부족 시 전체 풀에서 무작위 보충
             const remain = pool.filter(q => !selectedPool.some(s => s.id === q.id));
             if (remain.length > 0) {
               selectedPool.push(remain[Math.floor(Math.random() * remain.length)]);
@@ -758,7 +840,6 @@
           }
         });
 
-        // 5문제가 다 안 채워졌을 때 대비
         while (selectedPool.length < Math.min(QUIZ_COUNT, pool.length)) {
           const remain = pool.filter(q => !selectedPool.some(s => s.id === q.id));
           if (remain.length === 0) break;
@@ -819,6 +900,7 @@
 
       document.getElementById('explanation-box').style.display = 'none';
       document.getElementById('next-btn').style.display = 'none';
+      document.getElementById('hint-btn').style.display = 'block';
     }
 
     function selectOption(selectedIndex, btnElement) {
@@ -855,6 +937,10 @@
       const nextBtn = document.getElementById('next-btn');
       nextBtn.innerText = (currentIdx === quizData.length - 1) ? "과거 결과 보러 가기" : "다음 문제 풀기";
       nextBtn.style.display = 'block';
+    }
+
+    function openHintAction() {
+      alert("🎬 20초 실록 영상 힌트가 곧 공개됩니다!\n현재 채널에서 핵심만 쏙 뽑은 역사 쇼츠 영상을 준비 중입니다.");
     }
 
     function nextQuestion() {
@@ -980,6 +1066,45 @@ ${challengeUrl}`;
         navigator.clipboard.writeText(fullShareMessage).then(() => {
           alert(`🎉 [${rank.title}] 품계 및 영토 자랑 문구가 복사되었습니다!\n카카오톡 대화방에 [붙여넣기] 하시면 멋지게 전송됩니다.`);
         });
+      }
+    }
+
+    // --- 🔒 [암행어사 마스터 키 로직] ---
+    function handleSecretTap() {
+      secretTapCount++;
+      clearTimeout(secretTapTimer);
+      secretTapTimer = setTimeout(() => {
+        secretTapCount = 0;
+      }, 1500);
+
+      if (secretTapCount >= 5) {
+        secretTapCount = 0;
+        document.getElementById('admin-modal').style.display = 'flex';
+      }
+    }
+
+    function closeSecretPanel() {
+      document.getElementById('admin-modal').style.display = 'none';
+    }
+
+    function adminSetRank(targetExp) {
+      localStorage.setItem(STORAGE_EXP, targetExp.toString());
+      alert(`👑 경험치가 ${targetExp}점(으)로 설정되었습니다!\n새로고침 후 반영됩니다.`);
+      location.reload();
+    }
+
+    function adminResetDaily() {
+      localStorage.removeItem(STORAGE_DAILY_DATE);
+      localStorage.removeItem(STORAGE_DAILY_STAGE);
+      alert('⚡ 오늘의 응시 제한이 즉시 초기화되었습니다!\n새로운 시험을 즉시 치를 수 있습니다.');
+      location.reload();
+    }
+
+    function adminClearAll() {
+      if (confirm('정말로 모든 누적 경험치와 통과 기록을 초기화하시겠습니까? (초야의 백성으로 복귀)')) {
+        localStorage.clear();
+        alert('🧹 모든 데이터가 깨끗이 초기화되었습니다.');
+        location.reload();
       }
     }
 
