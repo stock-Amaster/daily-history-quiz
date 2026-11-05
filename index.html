@@ -437,7 +437,7 @@
     <div class="rank-up-alert" id="modal-rank-alert">축하합니다! 새로운 관직에 제수되었습니다.</div>
     
     <div class="modal-actions">
-      <!-- 🔥 무한 하이패스 버튼 (공유나 리셋 없이 즉시 다음 5문제) -->
+      <!-- 🔥 무한 하이패스 버튼 (공유 없이 다음 5문제 즉시 도전) -->
       <button class="btn-hipass" onclick="continueHiPass()">
         ⚡ 쉼 없는 과거시험 (공유 없이 다음 5문제 즉시 도전)
       </button>
@@ -452,10 +452,9 @@
 
 <script>
   // ==========================================
-  // [1] 구글 스프레드시트 CSV 게시 URL 연동
+  // [1] 구글 스프레드시트 CSV 실제 연동 주소 반영
   // ==========================================
-  // 대표님의 구글 시트 웹 게시(CSV) 링크를 입력하시면 자동으로 700문항을 긁어옵니다.
-  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCk8l_x6G46qZ9oF-nEAEw53-2kXyR2d8K87lQ/pub?gid=0&single=true&output=csv";
+  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?gid=0&single=true&output=csv";
 
   // 품계 테이블 (점수에 따라 자동 승급)
   const RANKS = [
@@ -490,7 +489,6 @@
       const now = audioCtx.currentTime;
 
       if (isSuccess) {
-        // 급제 팡파레 (징소리와 나팔 화음)
         [330, 392, 440, 523, 659].forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -504,7 +502,6 @@
           osc.stop(now + idx * 0.1 + 0.6);
         });
       } else {
-        // 낙방 효과음 (낮은 징 여운)
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sawtooth';
@@ -517,9 +514,7 @@
         osc.start(now);
         osc.stop(now + 0.4);
       }
-    } catch(e) {
-      // AudioContext 제한 브라우저 대비 무음 처리
-    }
+    } catch(e) {}
   }
 
   // ==========================================
@@ -545,12 +540,10 @@
     }
   }
 
-  // CSV 파서 (따옴표, 탭, 쉼표 대응)
   function parseCSV(text) {
     const lines = text.split(/\r\n|\n/);
     allQuestions = [];
 
-    // 1행은 헤더이므로 생략 (i = 1)
     for (let i = 1; i < lines.length; i++) {
       const row = lines[i];
       if (!row || !row.trim()) continue;
@@ -579,14 +572,11 @@
     }
   }
 
-  // 예비용 문항
   function loadFallbackQuestions() {
     allQuestions = [
       { category: '조선 왕실', question: '조선시대 왕의 얼굴을 그린 초상화를 부르던 공식 명칭은?', opt1: '어진', opt2: '의궤', ans: 1, explanation: '왕의 얼굴은 어진(御眞)이라 칭하며 주탑화사가 주관하여 그렸습니다.', level: 1, originalIndex: 0 },
       { category: '삼국 영웅', question: '고구려 광개토대왕이 우리나라 최초로 독자 사용한 연호는?', opt1: '영락', opt2: '건원', ans: 1, explanation: '영원한 즐거움을 뜻하는 영락(永樂) 연호를 사용하여 천하관을 선포했습니다.', level: 2, originalIndex: 1 },
-      { category: '고려 왕조', question: '고려 숙종 때 은 한 근으로 한반도 지형을 본떠 만든 고액 은돈은?', opt1: '활구(은병)', opt2: '상평통보', ans: 1, explanation: '입구가 넓은 호병 모양의 활구는 귀족 관료들의 고액 거래용 은돈이었습니다.', level: 3, originalIndex: 2 },
-      { category: '조선 생활', question: '조선시대 엽전이 시중에 마르고 화폐 유통이 중단되던 현상은?', opt1: '전황', opt2: '사재기', ans: 1, explanation: '상평통보를 창고에 쌓아두어 유통이 마르는 것을 전황(錢荒)이라 했습니다.', level: 3, originalIndex: 3 },
-      { category: '근현대사', question: '1940년 대한민국 임시정부가 충칭에서 창설한 정규 국방군은?', opt1: '한국광복군', opt2: '별기군', ans: 1, explanation: '한국광복군은 총사령 이청천, 참모장 이범석을 중심으로 결성된 정규군입니다.', level: 2, originalIndex: 4 }
+      { category: '고려 왕조', question: '고려 숙종 때 은 한 근으로 한반도 지형을 본떠 만든 고액 은돈은?', opt1: '활구(은병)', opt2: '상평통보', ans: 1, explanation: '입구가 넓은 호병 모양의 활구는 귀족 관료들의 고액 거래용 은돈이었습니다.', level: 3, originalIndex: 2 }
     ];
   }
 
@@ -597,10 +587,8 @@
     document.getElementById('loading').style.display = 'none';
     document.getElementById('quiz-content').style.display = 'block';
 
-    // 푼 적 없는 문제들만 추리기
     let available = allQuestions.filter(q => !solvedIndexes.has(q.originalIndex));
 
-    // 700문항을 전부 푼 경우 자동 초기화
     if (available.length < 5) {
       alert("장원급제! 준비된 모든 과거 문제를 섭렵하셨습니다. 문제를 처음부터 다시 섞습니다.");
       solvedIndexes.clear();
@@ -608,7 +596,6 @@
       available = [...allQuestions];
     }
 
-    // 무작위 5문항 셔플 추출
     available.sort(() => 0.5 - Math.random());
     currentBatch = available.slice(0, 5);
 
@@ -617,7 +604,6 @@
     renderQuestion();
   }
 
-  // 1문항 렌더링
   function renderQuestion() {
     const q = currentBatch[currentIndex];
     document.getElementById('q-category').innerText = q.category;
@@ -626,21 +612,18 @@
     document.getElementById('opt-1-text').innerText = q.opt1;
     document.getElementById('opt-2-text').innerText = q.opt2;
 
-    // 힌트 처리 (난이도 3 전용)
     const hintWrapper = document.getElementById('hint-wrapper');
     const hintText = document.getElementById('hint-text');
     hintText.style.display = 'none';
 
     if (q.level === 3) {
       hintWrapper.style.display = 'block';
-      // 해설의 첫 문장을 힌트로 제공
       const hintSummary = q.explanation.split('.')[0] + '...';
       hintText.innerText = `💡 [암행어사 밀서]: ${hintSummary}`;
     } else {
       hintWrapper.style.display = 'none';
     }
 
-    // 버튼 초기화
     const btns = document.querySelectorAll('.btn-option');
     btns.forEach(b => {
       b.className = 'btn-option';
@@ -651,7 +634,6 @@
     document.getElementById('next-btn').style.display = 'none';
   }
 
-  // 힌트 열기/닫기 토글
   function toggleHint() {
     const hintText = document.getElementById('hint-text');
     hintText.style.display = (hintText.style.display === 'block') ? 'none' : 'block';
@@ -677,12 +659,10 @@
       btns[q.ans - 1].classList.add('correct');
     }
 
-    // 푼 문제 인덱스 저장 (하이패스 중복 출제 원천 차단)
     solvedIndexes.add(q.originalIndex);
     localStorage.setItem('solved_indices', JSON.stringify(Array.from(solvedIndexes)));
     localStorage.setItem('user_history_score', totalScore.toString());
 
-    // 해설 표시
     const expBox = document.getElementById('explanation');
     expBox.innerHTML = `<strong>${isCorrect ? '✅ 급제 (정답)!' : '❌ 낙방 (오답)!'}</strong><br>${q.explanation}`;
     expBox.style.display = 'block';
@@ -723,14 +703,12 @@
     modal.style.display = 'flex';
   }
 
-  // 🔥 핵심: 공유 없이 다음 5문제를 즉시 로딩하는 하이패스 함수
   function continueHiPass() {
     document.getElementById('result-modal').style.display = 'none';
     startNewBatch();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 카카오톡 / 외부 공유
   function shareQuiz() {
     const shareText = `[조선 과거시험] 나의 품계는 '${getRankTitle(totalScore).title}' (${totalScore}점)! 당신도 전국 8도를 정복할 수 있겠소?`;
     if (navigator.share) {
@@ -746,13 +724,11 @@
     }
   }
 
-  // 품계 및 8도 점령 UI 업데이트
   function updateProfileUI() {
     document.getElementById('user-score').innerText = totalScore;
     const rank = getRankTitle(totalScore);
     document.getElementById('user-rank').innerText = rank.title;
 
-    // 50점마다 1개 도씩 평정 (최대 8도)
     const conquered = Math.min(8, Math.floor(totalScore / 50));
     document.getElementById('conquered-count').innerText = `${conquered} / 8도 평정`;
 
@@ -775,7 +751,6 @@
     return current;
   }
 
-  // 실행 진입
   window.addEventListener('DOMContentLoaded', initData);
 </script>
 </body>
