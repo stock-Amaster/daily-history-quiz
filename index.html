@@ -21,7 +21,7 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Pretendard", sans-serif;
       -webkit-tap-highlight-color: transparent;
-      word-break: keep-all; /* 단어 쪼개짐 방지 */
+      word-break: keep-all;
       overflow-wrap: break-word;
     }
 
@@ -72,7 +72,6 @@
       position: relative;
     }
 
-    /* 도전자 알림 배너 */
     .challenge-banner {
       display: none;
       background: linear-gradient(135deg, #7c2d12, #451a03);
@@ -86,7 +85,6 @@
       line-height: 1.45;
     }
 
-    /* 상단 관직 품계 뱃지 바 */
     .user-profile-bar {
       display: flex;
       justify-content: space-between;
@@ -233,7 +231,6 @@
       width: 100%;
     }
 
-    /* 결과 카드 */
     .result-box {
       display: none;
       text-align: center;
@@ -247,7 +244,6 @@
       margin: 8px 0;
     }
 
-    /* 승진 시 교지 두루마리 */
     .royal-edict {
       display: none;
       background: #fdf6e2;
@@ -295,7 +291,6 @@
       margin-top: 4px;
     }
 
-    /* 조선 8도 관할 미니맵 스타일 */
     .joseon-map-card {
       background: #0f172a;
       border: 1px solid #334155;
@@ -369,22 +364,6 @@
       fill: #ffffff;
     }
 
-    .flag-icon {
-      display: none;
-      font-size: 13px;
-    }
-
-    .flag-icon.active {
-      display: block;
-      animation: flagPop 0.4s ease-out;
-    }
-
-    @keyframes flagPop {
-      0% { transform: scale(0); }
-      70% { transform: scale(1.3); }
-      100% { transform: scale(1); }
-    }
-
     .share-btn {
       background-color: #fee500;
       color: #191919;
@@ -422,10 +401,8 @@
   </div>
 
   <div class="quiz-container">
-    <!-- 친구의 도전을 받고 들어왔을 때 나타나는 깃발 배너 -->
     <div class="challenge-banner" id="challenge-banner"></div>
 
-    <!-- 조선 품계 표시 헤더 -->
     <div class="user-profile-bar">
       <div>
         <span class="rank-tag" id="user-rank-tag">신분</span>
@@ -454,9 +431,7 @@
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 풀기</button>
     </div>
 
-    <!-- 결과 화면 -->
     <div class="result-box" id="result-box">
-      <!-- 승격 교지 창 -->
       <div class="royal-edict" id="royal-edict">
         <div class="edict-header">敎 旨 (교 지)</div>
         <div class="edict-body" id="edict-text"></div>
@@ -468,7 +443,6 @@
       <p id="result-comment" style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 8px;"></p>
       <p id="review-info" style="color: #38bdf8; font-size: 13px; line-height: 1.5; margin-bottom: 12px;"></p>
 
-      <!-- [하이브리드 시각화] 조선 8도 관할 미니맵 카드 -->
       <div class="joseon-map-card">
         <div class="map-header">
           <div class="map-title">🗺️ 조선 8도 관할령 영토도</div>
@@ -476,48 +450,38 @@
         </div>
         <div class="map-svg-wrap">
           <svg viewBox="0 0 240 320" width="100%" height="240" xmlns="http://www.w3.org/2000/svg">
-            <!-- 함경도 (ID: p-hamgyong) -->
             <path id="p-hamgyong" class="province-path" d="M115,20 L185,15 L220,60 L195,110 L150,95 L125,75 Z" />
             <text id="t-hamgyong" x="165" y="65" class="province-label" text-anchor="middle">함경도</text>
 
-            <!-- 평안도 (ID: p-pyongan) -->
             <path id="p-pyongan" class="province-path" d="M40,70 L115,55 L125,75 L110,125 L45,115 Z" />
             <text id="t-pyongan" x="78" y="95" class="province-label" text-anchor="middle">평안도</text>
 
-            <!-- 황해도 (ID: p-hwanghae) -->
             <path id="p-hwanghae" class="province-path" d="M45,120 L110,125 L105,160 L40,155 Z" />
             <text id="t-hwanghae" x="75" y="145" class="province-label" text-anchor="middle">황해도</text>
 
-            <!-- 강원도 (ID: p-gangwon) -->
             <path id="p-gangwon" class="province-path" d="M110,125 L150,95 L195,110 L180,180 L120,175 Z" />
             <text id="t-gangwon" x="145" y="145" class="province-label" text-anchor="middle">강원도</text>
 
-            <!-- 경기도 (한양) (ID: p-gyeonggi) -->
             <path id="p-gyeonggi" class="province-path" d="M60,160 L105,160 L118,175 L110,210 L65,205 Z" />
             <text id="t-gyeonggi" x="88" y="185" class="province-label" text-anchor="middle">경기(한양)</text>
 
-            <!-- 충청도 (ID: p-chungcheong) -->
             <path id="p-chungcheong" class="province-path" d="M65,210 L110,210 L125,215 L115,245 L60,240 Z" />
             <text id="t-chungcheong" x="88" y="230" class="province-label" text-anchor="middle">충청도</text>
 
-            <!-- 경상도 (ID: p-gyeongsang) -->
             <path id="p-gyeongsang" class="province-path" d="M125,185 L180,185 L190,265 L135,285 L120,245 Z" />
             <text id="t-gyeongsang" x="155" y="240" class="province-label" text-anchor="middle">경상도</text>
 
-            <!-- 전라도 (ID: p-jeolla) -->
             <path id="p-jeolla" class="province-path" d="M55,245 L115,245 L125,275 L95,305 L45,295 Z" />
             <text id="t-jeolla" x="85" y="278" class="province-label" text-anchor="middle">전라도</text>
           </svg>
         </div>
         <p id="map-assigned-text" style="font-size: 12px; color: #94a3b8; margin-top: 8px;">현재 부임지: 과거를 치러 영토 관할권을 얻으십시오.</p>
       </div>
-      
-      <!-- 보너스 해금 버튼 -->
+
       <div id="bonus-action-area" style="display: none;">
         <button class="bonus-btn" onclick="triggerShareForBonus()">🎁 친구에게 공유하고<br>오늘 보너스 5문제 더 풀기!</button>
       </div>
 
-      <!-- 보너스까지 완료 시 표시 -->
       <div id="daily-complete-area" style="display: none;">
         <p style="color: #f59e0b; font-weight: 700; font-size: 14px; margin-bottom: 8px;">🌙 오늘의 모든 과거시험(총 10문항) 완료!</p>
         <p style="color: #64748b; font-size: 13px; margin-bottom: 12px; line-height: 1.5;">오늘 밤 12시(자정)에 새로운 과거시험이 열립니다!</p>
@@ -549,7 +513,6 @@
     let initialExp = 0;
     let currentPlayStage = 'base';
 
-    // 품계별 관할 영토 매핑 정의
     const RANKS = [
       { id: 10, minExp: 500, tag: "전설", title: "조선 국왕", duty: "실록의 주인공 (만렙)", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan','hamgyong'], capital: 'gyeonggi', desc: "팔도강산 완전 통치" },
       { id: 9,  minExp: 380, tag: "정1품", title: "영의정", duty: "일인지하 만인지상", territories: ['gyeonggi','gangwon','chungcheong','jeolla','gyeongsang','hwanghae','pyongan'], capital: 'gyeonggi', desc: "7도 행정 총괄" },
@@ -585,11 +548,9 @@
       document.getElementById('user-duty-text').innerText = rank.duty;
     }
 
-    // [하이브리드 시각화] 품계에 따른 조선 8도 렌더링
     function renderJoseonMap(rank) {
       const allTerritories = ['hamgyong', 'pyongan', 'hwanghae', 'gangwon', 'gyeonggi', 'chungcheong', 'gyeongsang', 'jeolla'];
       
-      // 초기화
       allTerritories.forEach(t => {
         const path = document.getElementById(`p-${t}`);
         const text = document.getElementById(`t-${t}`);
@@ -597,7 +558,6 @@
         if (text) text.className.baseVal = "province-label";
       });
 
-      // 점령된 영토에 불 켜기
       rank.territories.forEach(t => {
         const path = document.getElementById(`p-${t}`);
         const text = document.getElementById(`t-${t}`);
@@ -743,6 +703,8 @@
           const opt2 = row[3];
           const answerNum = parseInt(row[4], 10);
           const explanation = row[5] || "";
+          // G열 난이도 추출 (1: 초급, 2: 중급, 3: 고급)
+          const level = (row[6] && parseInt(row[6], 10)) ? parseInt(row[6], 10) : 1;
 
           if (question && opt1 && opt2 && (answerNum === 1 || answerNum === 2)) {
             allQuestions.push({
@@ -751,7 +713,8 @@
               question: question,
               options: [opt1, opt2],
               answer: answerNum - 1,
-              explanation: explanation
+              explanation: explanation,
+              level: level
             });
           }
         }
@@ -767,9 +730,42 @@
           pool = allQuestions;
         }
 
-        pool.sort(() => Math.random() - 0.5);
-        quizData = pool.slice(0, Math.min(QUIZ_COUNT, pool.length));
+        // [품계별 맞춤형 난이도 추출 로직]
+        let targetLevels = [];
+        if (initialExp < 10) {
+          // 초보 (백성~훈도생): 초급(1) 4개 + 중급(2) 1개
+          targetLevels = [1, 1, 1, 1, 2];
+        } else if (initialExp < 85) {
+          // 중수 (진사~박사): 초급(1) 2개 + 중급(2) 2개 + 고급(3) 1개
+          targetLevels = [1, 1, 2, 2, 3];
+        } else {
+          // 고수 (군수 이상): 중급(2) 2개 + 고급(3) 3개
+          targetLevels = [2, 2, 3, 3, 3];
+        }
 
+        const selectedPool = [];
+        targetLevels.forEach(lvl => {
+          const matched = pool.filter(q => q.level === lvl && !selectedPool.some(s => s.id === q.id));
+          if (matched.length > 0) {
+            const picked = matched[Math.floor(Math.random() * matched.length)];
+            selectedPool.push(picked);
+          } else {
+            // 해당 난이도 부족 시 전체 풀에서 무작위 보충
+            const remain = pool.filter(q => !selectedPool.some(s => s.id === q.id));
+            if (remain.length > 0) {
+              selectedPool.push(remain[Math.floor(Math.random() * remain.length)]);
+            }
+          }
+        });
+
+        // 5문제가 다 안 채워졌을 때 대비
+        while (selectedPool.length < Math.min(QUIZ_COUNT, pool.length)) {
+          const remain = pool.filter(q => !selectedPool.some(s => s.id === q.id));
+          if (remain.length === 0) break;
+          selectedPool.push(remain[Math.floor(Math.random() * remain.length)]);
+        }
+
+        quizData = selectedPool;
         renderQuestion();
       } catch (err) {
         document.getElementById('category-title').innerText = "안내";
@@ -883,7 +879,6 @@
       const oldRank = getRank(initialExp);
       const newRank = getRank(currentExp);
 
-      // 미니 지도 렌더링
       renderJoseonMap(newRank);
 
       if (newRank.title !== oldRank.title) {
