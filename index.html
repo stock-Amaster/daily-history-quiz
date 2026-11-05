@@ -430,7 +430,6 @@
   </div>
 </div>
 
-<!-- 과거시험 결과 모달 -->
 <div class="modal-overlay" id="result-modal">
   <div class="modal-content">
     <div class="modal-title" id="modal-title">🏁 과거시험 채점 결과</div>
@@ -438,12 +437,10 @@
     <div class="rank-up-alert" id="modal-rank-alert">축하합니다! 새로운 관직에 제수되었습니다.</div>
     
     <div class="modal-actions">
-      <!-- 3문제 이상 합격 시 -->
       <button class="btn-hipass" id="hipass-btn" onclick="continueHiPass()">
         ⚡ 쉼 없는 과거시험 (합격! 다음 5문제 진격)
       </button>
 
-      <!-- 2문제 이하 낙방 시 -->
       <button class="btn-retry" id="retry-btn" onclick="retryBatch()" style="display: none;">
         🔄 낙방이오! 재시 치르기 (새로운 5문제로 재도전)
       </button>
@@ -456,9 +453,9 @@
 </div>
 
 <script>
-  // [1] 구글 시트 문제 데이터 및 로그 수신 URL
+  // [1] 구글 스프레드시트 700문항 연동 & 유저기록 수신 새 웹 앱 URL
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?gid=0&single=true&output=csv";
-  const LOG_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzX6e4rIjJuN4jjE_p1OkY_o_Fi2Vj_Qm8v3sM5xep_WK46DTs_ZXAXE1fjjrvViXuT/exec";
+  const LOG_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGuWEixog5rQRSEFiXwzYqXf9Cl4wo8qQxHMu_QcGFROE1qfapLcoKbbMOO1myiARB/exec";
 
   const RANKS = [
     { score: 0, title: "평민 (과거 준비생)" },
@@ -482,7 +479,7 @@
   let solvedIndexes = new Set(JSON.parse(localStorage.getItem('solved_indices') || '[]'));
   let audioCtx = null;
 
-  // 유저 고유 식별자 생성/조회 (시트 기록용)
+  // 유저 고유 닉네임/식별자 (브라우저 최초 접속 시 자동 발급)
   let userUniqueId = localStorage.getItem('user_unique_id');
   if (!userUniqueId) {
     userUniqueId = '선비_' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -685,7 +682,7 @@
   }
 
   // ==========================================
-  // [결과 모달 및 구글 시트 유저기록 자동 전송]
+  // [결과 모달 및 구글 시트 유저기록 무조건 전송]
   // ==========================================
   function showResultModal() {
     const modal = document.getElementById('result-modal');
@@ -698,7 +695,7 @@
     const rankObj = getRankTitle(totalScore);
     const conquered = Math.min(8, Math.floor(totalScore / 50));
 
-    // 구글 시트로 유저 기록 자동 전송 (백그라운드 통신)
+    // 구글 시트로 성적 데이터 전송 (CORS 차단 100% 우회 핑 방식)
     sendResultToGoogleSheet(batchCorrectCount, totalScore, rankObj.title, conquered);
 
     if (batchCorrectCount >= 3) {
@@ -722,24 +719,25 @@
     modal.style.display = 'flex';
   }
 
-  // 대표님 구글 시트로 유저 결과 몰래 보내는 전송 함수
+  // 브라우저의 모든 보안 차단을 100% 뚫고 시트에 꽂아넣는 이미지 핑 전송 함수
   function sendResultToGoogleSheet(correctCount, total, rank, conqueredCount) {
     if (!LOG_SCRIPT_URL) return;
 
-    const payload = {
-      userId: userUniqueId,
-      batchResult: `${correctCount}/5 (${correctCount >= 3 ? '급제' : '과락'})`,
-      totalScore: total,
-      rankTitle: rank,
-      conqueredCount: `${conqueredCount}/8도 평정`
-    };
+    try {
+      const params = new URLSearchParams({
+        userId: userUniqueId,
+        batchResult: `${correctCount}/5 (${correctCount >= 3 ? '급제' : '과락'})`,
+        totalScore: total,
+        rankTitle: rank,
+        conqueredCount: `${conqueredCount}/8도 평정`,
+        _t: new Date().getTime() // 캐시 방지용 타임스탬프
+      });
 
-    fetch(LOG_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).catch(err => console.log("Log send err", err));
+      const pingImg = new Image();
+      pingImg.src = `${LOG_SCRIPT_URL}?${params.toString()}`;
+    } catch (err) {
+      console.log("전송 로그:", err);
+    }
   }
 
   function continueHiPass() {
