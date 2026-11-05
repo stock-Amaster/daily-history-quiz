@@ -313,7 +313,6 @@
       margin-top: 18px;
     }
 
-    /* 하이패스 통과 버튼 (급제 시) */
     .btn-hipass {
       background: #1e272e;
       color: #ffd32a;
@@ -335,7 +334,6 @@
       transform: scale(0.98);
     }
 
-    /* 재시 치르기 버튼 (낙방 시) */
     .btn-retry {
       background: #c0392b;
       color: #ffffff;
@@ -440,12 +438,12 @@
     <div class="rank-up-alert" id="modal-rank-alert">축하합니다! 새로운 관직에 제수되었습니다.</div>
     
     <div class="modal-actions">
-      <!-- 3문제 이상 맞혔을 때 노출 (진격 허용) -->
+      <!-- 3문제 이상 합격 시 -->
       <button class="btn-hipass" id="hipass-btn" onclick="continueHiPass()">
         ⚡ 쉼 없는 과거시험 (합격! 다음 5문제 진격)
       </button>
 
-      <!-- 2문제 이하로 낙방했을 때 노출 (진격 차단 및 재도전) -->
+      <!-- 2문제 이하 낙방 시 -->
       <button class="btn-retry" id="retry-btn" onclick="retryBatch()" style="display: none;">
         🔄 낙방이오! 재시 치르기 (새로운 5문제로 재도전)
       </button>
@@ -458,8 +456,9 @@
 </div>
 
 <script>
-  // 대표님의 구글 스프레드시트 CSV 실제 링크 연동
+  // [1] 구글 시트 문제 데이터 및 로그 수신 URL
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRLOa1x96Z9qxzRC5qoSj8JDxd81XHIiwueBp7W97MZcy6MbRfcBNN8eeenJuLZs7sECaoSIQN-PMRC/pub?gid=0&single=true&output=csv";
+  const LOG_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzX6e4rIjJuN4jjE_p1OkY_o_Fi2Vj_Qm8v3sM5xep_WK46DTs_ZXAXE1fjjrvViXuT/exec";
 
   const RANKS = [
     { score: 0, title: "평민 (과거 준비생)" },
@@ -482,6 +481,13 @@
   let totalScore = parseInt(localStorage.getItem('user_history_score') || '0');
   let solvedIndexes = new Set(JSON.parse(localStorage.getItem('solved_indices') || '[]'));
   let audioCtx = null;
+
+  // 유저 고유 식별자 생성/조회 (시트 기록용)
+  let userUniqueId = localStorage.getItem('user_unique_id');
+  if (!userUniqueId) {
+    userUniqueId = '선비_' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    localStorage.setItem('user_unique_id', userUniqueId);
+  }
 
   function playFanfare(isSuccess) {
     try {
@@ -679,7 +685,7 @@
   }
 
   // ==========================================
-  // [과락 컷오프 판정: 3개 이상 급제 vs 낙방]
+  // [결과 모달 및 구글 시트 유저기록 자동 전송]
   // ==========================================
   function showResultModal() {
     const modal = document.getElementById('result-modal');
@@ -690,8 +696,11 @@
     const retryBtn = document.getElementById('retry-btn');
 
     const rankObj = getRankTitle(totalScore);
+    const conquered = Math.min(8, Math.floor(totalScore / 50));
 
-    // 3개 이상 맞히면 진격 성공
+    // 구글 시트로 유저 기록 자동 전송 (백그라운드 통신)
+    sendResultToGoogleSheet(batchCorrectCount, totalScore, rankObj.title, conquered);
+
     if (batchCorrectCount >= 3) {
       modalTitle.innerText = "🎉 축 급제! 진격 성공";
       modalTitle.style.color = "var(--point-color)";
@@ -700,9 +709,7 @@
       
       hipassBtn.style.display = 'flex';
       retryBtn.style.display = 'none';
-    } 
-    // 2개 이하 맞히면 과락(낙방)
-    else {
+    } else {
       modalTitle.innerText = "⚠️ 과락 낙방! 진격 차단";
       modalTitle.style.color = "#c0392b";
       scoreText.innerHTML = `5문제 중 <strong>${batchCorrectCount}문제</strong> 급제 (과락)<br><span style="font-size:0.85rem; color:#7f8c8d;">최소 3문제 이상 맞혀야 다음으로 진격할 수 있소.</span>`;
@@ -715,14 +722,32 @@
     modal.style.display = 'flex';
   }
 
-  // 합격 시 다음 5문제 진격
+  // 대표님 구글 시트로 유저 결과 몰래 보내는 전송 함수
+  function sendResultToGoogleSheet(correctCount, total, rank, conqueredCount) {
+    if (!LOG_SCRIPT_URL) return;
+
+    const payload = {
+      userId: userUniqueId,
+      batchResult: `${correctCount}/5 (${correctCount >= 3 ? '급제' : '과락'})`,
+      totalScore: total,
+      rankTitle: rank,
+      conqueredCount: `${conqueredCount}/8도 평정`
+    };
+
+    fetch(LOG_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).catch(err => console.log("Log send err", err));
+  }
+
   function continueHiPass() {
     document.getElementById('result-modal').style.display = 'none';
     startNewBatch();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 낙방 시 재시 치르기
   function retryBatch() {
     document.getElementById('result-modal').style.display = 'none';
     startNewBatch();
