@@ -6,7 +6,7 @@
   <title>조선 과거시험: 8도 영토 정복기</title>
   
   <meta property="og:title" content="조선 과거시험: 전국 8도 역사 정복전">
-  <meta property="og:description" content="700문항을 모두 격파하고 천하통일 영의정과 조선 국왕에 등극하라! 다음은 아시아 정복이다!">
+  <meta property="og:description" content="전체 900문항 및 대하사극 문무 특별전 200문항 완파 도전! 8도를 평정하고 천하통일 조선 국왕에 등극하라!">
   <meta property="og:type" content="website">
 
   <style>
@@ -83,7 +83,7 @@
       line-height: 1.35;
     }
 
-    /* 상단 헤더: 모바일 카톡 인앱 브라우저 최적화 콤팩트 레이아웃 */
+    /* 상단 헤더: 모바일 카톡 최적화 콤팩트 레이아웃 */
     header {
       background: var(--paper-color);
       border: 1.5px solid var(--border-color);
@@ -101,12 +101,26 @@
     }
 
     h1 {
-      font-size: 1.18rem;
+      font-size: 1.15rem;
       color: var(--point-color);
       letter-spacing: -0.5px;
       display: flex;
       align-items: center;
       gap: 5px;
+    }
+
+    .btn-info-badge {
+      background: #f1ede2;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 0.74rem;
+      color: #725f46;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
 
     .rank-bar {
@@ -152,7 +166,41 @@
       transition: width 0.3s ease;
     }
 
-    /* 🗺️ 접이식(Accordion) 조선 8도 지도 카드: 기본 접힘 상태로 문제 밀림 100% 방지 */
+    /* 🎮 2개 모드 선택 탭 스위치 (8도 평정전 900제 vs 문무 특별전 200제) */
+    .mode-switch-card {
+      display: flex;
+      gap: 6px;
+      background: #ebdcc3;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid #c8b79b;
+    }
+
+    .btn-mode {
+      flex: 1;
+      padding: 8px 4px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      color: #68533b;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-mode.active {
+      background: var(--paper-color);
+      color: var(--point-color);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+      font-weight: 800;
+    }
+
+    /* 🗺️ 접이식(Accordion) 조선 8도 지도 카드 */
     .map-status-card {
       background: var(--paper-color);
       border: 1.5px solid var(--border-color);
@@ -177,7 +225,6 @@
       font-weight: bold;
     }
 
-    /* 8도 미니 인디케이터 점 (접혀 있어도 진행도 한눈에 확인) */
     .mini-province-dots {
       display: flex;
       gap: 3px;
@@ -212,11 +259,6 @@
       transition: all 0.2s ease;
     }
 
-    .btn-toggle-map:active {
-      background: #ebdcc3;
-    }
-
-    /* 접이식 본문 (기본 숨김: 스크롤 없는 카톡 화면 최적화) */
     #map-collapsible-wrapper {
       display: none;
       margin-top: 10px;
@@ -320,7 +362,7 @@
       font-weight: bold;
     }
 
-    /* 퀴즈 카드: 카톡 화면에서 스크롤 0번(첫 화면)에 바로 노출 */
+    /* 퀴즈 카드: 카톡 첫 화면에서 스크롤 0번으로 즉시 보이는 영역 */
     .quiz-card {
       background: var(--paper-color);
       border: 2px solid var(--border-color);
@@ -352,42 +394,38 @@
       font-size: 1.08rem;
       font-weight: 700;
       line-height: 1.48;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       color: #1a1a1a;
       word-break: keep-all;
-      min-height: 52px;
+      min-height: 50px;
     }
 
+    /* 🎬 유튜브 영상 힌트 버튼 (트래픽 유입용) */
     .hint-container {
       margin-bottom: 12px;
-      display: none;
     }
 
-    .btn-hint {
-      background: #fbf7ee;
-      border: 1px dashed var(--border-color);
-      color: #8c7355;
-      padding: 6px 10px;
+    .btn-hint-yt {
+      background: linear-gradient(135deg, #fff7f7, #ffebee);
+      border: 1.5px solid #ff5252;
+      color: #c62828;
+      padding: 7px 12px;
       border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 4px;
-      font-weight: bold;
+      gap: 6px;
+      font-weight: 800;
       width: 100%;
       justify-content: center;
+      box-shadow: 0 2px 5px rgba(255, 82, 82, 0.15);
+      transition: all 0.15s ease;
     }
 
-    .hint-content {
-      display: none;
-      margin-top: 6px;
-      padding: 8px 10px;
-      background: #fdf6e2;
-      border-radius: 6px;
-      font-size: 0.83rem;
-      color: #634a00;
-      border-left: 3px solid #d4af37;
+    .btn-hint-yt:active {
+      transform: scale(0.98);
+      background: #ffd6d6;
     }
 
     .options-grid {
@@ -439,6 +477,19 @@
       word-break: keep-all;
     }
 
+    /* 해설 하단 유튜브 풀영상 시청 링크 */
+    .yt-story-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      color: #c0392b;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
     .btn-next {
       margin-top: 14px;
       width: 100%;
@@ -453,6 +504,45 @@
       display: none;
     }
 
+    /* 하단 푸터 */
+    footer {
+      margin-top: 6px;
+      text-align: center;
+      padding: 10px 4px 16px 4px;
+      font-size: 0.78rem;
+      color: #8c7b65;
+      line-height: 1.5;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .footer-btn {
+      background: none;
+      border: none;
+      color: #725f46;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 2px 4px;
+    }
+
+    .footer-divider {
+      color: #c9bda9;
+    }
+
+    .footer-copy {
+      font-size: 0.73rem;
+      color: #a4947e;
+    }
+
+    /* 모달 공통 */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -504,7 +594,6 @@
       line-height: 1.45;
     }
 
-    /* 결과 모달 내 8도 지도 요약 미리보기 */
     .modal-map-card {
       background: #fdfaf3;
       border: 1px solid #dcd3c1;
@@ -588,6 +677,27 @@
       cursor: pointer;
     }
 
+    .about-section {
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .about-heading {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--point-color);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .about-text {
+      font-size: 0.83rem;
+      color: #333;
+      line-height: 1.48;
+    }
+
     .loader {
       text-align: center;
       padding: 35px;
@@ -611,15 +721,17 @@
 
   <header>
     <div class="header-top-row">
-      <h1>📜 조선 과거시험: 영토 평정전</h1>
-      <span style="font-size:0.75rem; color:#8c7355; font-weight:bold;">총 700문항</span>
+      <h1 id="header-main-title">📜 조선 과거시험: 영토 평정전</h1>
+      <button class="btn-info-badge" onclick="openAboutModal()" type="button">
+        ℹ️ 소개·문의
+      </button>
     </div>
     
     <div class="rank-bar">
       <div class="rank-bar-row">
         <div>품계: <span id="user-rank" class="rank-badge">초야의 백성</span></div>
         <div>총점: <span id="user-score" style="color:var(--point-color);">0</span>점</div>
-        <div>정답: <span id="user-exp" style="color:#b22222;">0</span>제</div>
+        <div>진도: <span id="user-exp" style="color:#b22222; font-weight:800;">0</span> / <span id="target-total-q">900</span>제</div>
       </div>
       <div class="progress-bar-container">
         <div class="progress-bar-fill" id="progress-fill"></div>
@@ -627,12 +739,21 @@
     </div>
   </header>
 
-  <!-- 🗺️ 콤팩트 접이식(Accordion) 조선 8도 평정 바: 평소엔 1줄로 압축되어 문제 밀림 방지 -->
-  <div class="map-status-card">
+  <!-- 🎮 2개 모드 선택 탭 스위치 (8도 평정전 900제 vs 문무 특별전 200제) -->
+  <div class="mode-switch-card">
+    <button class="btn-mode active" id="btn-mode-all" onclick="selectQuizMode('all')" type="button">
+      📜 8도 영토 평정전 (900제 전체)
+    </button>
+    <button class="btn-mode" id="btn-mode-munmu" onclick="selectQuizMode('munmu')" type="button">
+      ⚔️ 대하사극 문무 특별전 (200제)
+    </button>
+  </div>
+
+  <!-- 🗺️ 콤팩트 접이식(Accordion) 조선 8도 평정 바 -->
+  <div class="map-status-card" id="map-section-card">
     <div class="map-status-bar" onclick="toggleMap()">
       <div class="map-status-left">
         <span>🗺️ 8도 평정: <strong id="conquered-count" style="color:var(--point-color);">0 / 8도</strong></span>
-        <!-- 8도 인디케이터 점 (접혀있어도 진행 상태 확인) -->
         <div class="mini-province-dots" id="mini-dots">
           <span class="p-dot" title="경기도"></span>
           <span class="p-dot" title="충청도"></span>
@@ -737,11 +858,11 @@
 
       <div class="quiz-question" id="q-text">질문이 여기에 표시됩니다.</div>
 
-      <div class="hint-container" id="hint-wrapper">
-        <button class="btn-hint" onclick="toggleHint()">
-          📜 암행어사 밀서 (난이도 3 특별 힌트 보기)
+      <!-- 🎬 유튜브 영상 힌트 버튼 (트래픽 유입용) -->
+      <div class="hint-container">
+        <button class="btn-hint-yt" id="btn-yt-hint" onclick="openYouTubeHint()" type="button">
+          🎬 유튜브 영상 힌트: 이 사건의 결정적 단서 보기 ➜
         </button>
-        <div class="hint-content" id="hint-text"></div>
       </div>
 
       <div class="options-grid">
@@ -753,21 +874,38 @@
         </button>
       </div>
 
-      <div class="explanation-box" id="explanation"></div>
+      <div class="explanation-box" id="explanation">
+        <div id="exp-text"></div>
+        <div class="yt-story-link" onclick="openYouTubeStory()">
+          📺 [역사 더보기] 유튜브에서 이 사건 풀영상 시청하기 ➜
+        </div>
+      </div>
 
       <button class="btn-next" id="next-btn" onclick="nextQuestion()">다음 문항으로 ➜</button>
     </div>
   </div>
+
+  <!-- 하단 푸터 -->
+  <footer>
+    <div class="footer-links">
+      <button class="footer-btn" onclick="openAboutModal()" type="button">📜 프로젝트 소개</button>
+      <span class="footer-divider">|</span>
+      <button class="footer-btn" onclick="openAboutModal()" type="button">📮 문제 제보 및 제휴 문의</button>
+    </div>
+    <div class="footer-copy">
+      조선 과거시험 연구회 · 회원가입 없이 누구나 무료로 즐기는 역사 퀴즈<br>
+      © 2026 조선 과거시험: 영토 평정전. All rights reserved.
+    </div>
+  </footer>
 </div>
 
-<!-- 과거시험 채점 결과 모달 (5문제 완주 시 점령 현황 지도 확인) -->
+<!-- 과거시험 채점 결과 모달 -->
 <div class="modal-overlay" id="result-modal">
   <div class="modal-content">
     <div class="modal-title" id="modal-title">🏁 과거시험 채점 결과</div>
     <div class="score-summary" id="modal-score-text">5문제 중 3문제 급제!</div>
     <div class="rank-up-alert" id="modal-rank-alert">축하합니다! 새로운 관직에 제수되었습니다.</div>
     
-    <!-- 채점 결과 창 내 영토 점령 현황 요약 -->
     <div class="modal-map-card">
       <div class="modal-map-title">🗺️ 전국 8도 영토 평정 현황</div>
       <div id="modal-conquered-status" style="font-weight:bold; color:var(--point-color); font-size:0.95rem;">0 / 8도 평정 완료</div>
@@ -794,14 +932,66 @@
         📢 시험지 카톡 공유하고 친구와 겨루기
       </button>
     </div>
+
+    <div style="margin-top: 10px; font-size: 0.76rem; color: #888;">
+      오답 제보 및 비즈니스 문의: <a href="javascript:void(0)" onclick="openAboutModal()" style="color:var(--point-color); text-decoration:underline; font-weight:bold;">문의하기 창 열기</a>
+    </div>
+  </div>
+</div>
+
+<!-- 📜 소개 & 문의하기 모달 -->
+<div class="modal-overlay" id="about-modal">
+  <div class="modal-content">
+    <div class="modal-title">📜 조선 과거시험 편찬회</div>
+    <div style="font-size:0.8rem; color:#7a6855; margin-bottom:12px;">전국 8도 역사 정복 & 대하사극 문무 특별전</div>
+    
+    <div class="about-section">
+      <div class="about-heading">🏛️ 프로젝트 소개</div>
+      <p class="about-text">
+        '조선 과거시험: 영토 평정전'은 <strong>회원가입이나 어떠한 개인정보 요구 없이</strong>, 누구나 1초 만에 무료로 우리 역사를 정복하고 겨룰 수 있는 에듀테크 역사 퀴즈 플랫폼입니다.
+      </p>
+    </div>
+
+    <div class="about-section">
+      <div class="about-heading">📚 엄격한 정사 사료 고증</div>
+      <p class="about-text">
+        삼국사기, 삼국유사, 고려사, 조선왕조실록 등 공인된 사료 기록을 바탕으로 철저한 고증을 거쳐 총 900문항의 정통 역사 문제은행을 구축하였습니다.
+      </p>
+    </div>
+
+    <div class="about-section">
+      <div class="about-heading">⚔️ 대하사극 〈문무〉 특별전 (200제)</div>
+      <p class="about-text">
+        신라 삼국통일과 나당전쟁의 결전을 다룬 집중 200문항을 통해, 드라마 시청 전후 역사적 배경과 실존 인물의 진실을 깊이 있게 이해할 수 있습니다.
+      </p>
+    </div>
+
+    <div class="about-section" style="background:#f2ede3; border:1px solid #d4c8b2; border-radius:8px; padding:10px 12px; margin-top:10px;">
+      <div class="about-heading" style="color:#2c251e;">📮 오답 제보 및 비즈니스 제휴 문의</div>
+      <div style="font-size:0.82rem; color:#444; line-height:1.6; margin-top:4px;">
+        • <strong>문의 이메일:</strong> <a href="mailto:contact@example.com" id="about-email" style="color:var(--point-color); font-weight:bold; text-decoration:underline;">contact@example.com</a><br>
+        • <strong>카카오톡 오픈채팅:</strong> <a href="https://open.kakao.com/" target="_blank" id="about-kakao" style="color:#b22222; font-weight:bold; text-decoration:underline;">1:1 오픈채팅 문의하기 ➜</a><br>
+        • <strong>공식 유튜브 채널:</strong> <a href="https://www.youtube.com/@역사퀴즈" target="_blank" id="about-youtube" style="color:#c62828; font-weight:bold; text-decoration:underline;">역사 퀴즈 공식 유튜브 바로가기 ➜</a>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn-hipass" onclick="closeAboutModal()" style="padding:12px;">
+        닫기 및 퀴즈로 돌아가기 ➜
+      </button>
+    </div>
   </div>
 </div>
 
 <script>
+  // 구글 시트 연동 주소
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1iPe9ldyjdfPbY6xF29aiOpfCVw_qIU3R4ZfyDCHdiHs/export?format=csv&gid=0";
   const LOG_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyBxph1RhHUGhm9As0CVx5xmZooki5HmcuKfEZIZPXxajEUHpXlR8h24luDHmSNkTR/exec";
 
-  // 11단계 정규 조선 품계 승급 시스템 (정답 수 Exp 기준)
+  // 📺 유튜브 채널 및 영상 연동 주소 (운영 채널 URL로 수정 가능)
+  const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/results?search_query=%EC%97%AD%EC%82%AC+%ED%80%B4%EC%A6%88";
+
+  // 11단계 정규 조선 품계 승급 시스템 (Exp 기준)
   const RANKS = [
     { reqExp: 0,   id: 0,  title: "초야의 백성", desc: "과거 준비생" },
     { reqExp: 3,   id: 1,  title: "서당 훈도생", desc: "천자문 완독" },
@@ -816,11 +1006,15 @@
     { reqExp: 500, id: 10, title: "조선 국왕 (천하통일)", desc: "실록의 주인공 (만렙)" }
   ];
 
-  let allQuestions = [];
+  let rawAllQuestions = []; // 시트에서 불러온 원본 900문항
+  let activeQuestions = [];    // 현재 모드에 선택된 문항 풀
   let currentBatch = [];
   let currentIndex = 0;
   let batchCorrectCount = 0;
   let batchWrongQuestions = [];
+
+  // 모드 상태 ('all': 900제 전체, 'munmu': 문무 200제)
+  let currentMode = 'all';
   
   // 영구 누적 데이터
   let totalScore = parseInt(localStorage.getItem('user_history_score') || '0');
@@ -835,7 +1029,66 @@
     localStorage.setItem('user_unique_id', userUniqueId);
   }
 
-  // 지도 토글 (접기/펼치기)
+  // 1. 모드 선택 토글 함수
+  function selectQuizMode(mode) {
+    currentMode = mode;
+    const btnAll = document.getElementById('btn-mode-all');
+    const btnMunmu = document.getElementById('btn-mode-munmu');
+    const targetCountEl = document.getElementById('target-total-q');
+    const headerTitle = document.getElementById('header-main-title');
+
+    if (mode === 'munmu') {
+      btnMunmu.classList.add('active');
+      btnAll.classList.remove('active');
+      headerTitle.innerText = "⚔️ 대하사극 〈문무〉 특별전";
+      
+      // 문무왕 및 삼국통일/나당전쟁 관련 문항 필터링 (키워드 또는 카테고리 매칭)
+      const keywords = ['문무', '신라', '삼국', '나당', '백제', '고구려', '김유신', '김춘추', '매소성', '기벌포', '대왕암', '감은사', '만파식적', '원효', '의상', '천보노', '계백', '의자왕', '안압지', '화랑'];
+      activeQuestions = rawAllQuestions.filter(q => {
+        return keywords.some(k => q.category.includes(k) || q.question.includes(k) || q.explanation.includes(k));
+      });
+
+      // 만약 필터링 문항이 적다면 원본의 문무왕 섹션(또는 최소 200제 보장)
+      if (activeQuestions.length < 50 && rawAllQuestions.length > 0) {
+        activeQuestions = rawAllQuestions.slice(Math.max(0, rawAllQuestions.length - 200));
+      }
+      
+      targetCountEl.innerText = activeQuestions.length > 0 ? activeQuestions.length : 200;
+    } else {
+      btnAll.classList.add('active');
+      btnMunmu.classList.remove('active');
+      headerTitle.innerText = "📜 조선 과거시험: 영토 평정전";
+      activeQuestions = [...rawAllQuestions];
+      targetCountEl.innerText = rawAllQuestions.length > 0 ? rawAllQuestions.length : 900;
+    }
+
+    updateProfileUI();
+    startNewBatch();
+  }
+
+  // 유튜브 영상 힌트 오픈
+  function openYouTubeHint() {
+    const q = currentBatch[currentIndex];
+    const query = encodeURIComponent(`문무왕 ${q.category} ${q.question.substring(0, 15)}`);
+    const searchUrl = `https://www.youtube.com/results?search_query=${query}`;
+    window.open(searchUrl, '_blank');
+  }
+
+  // 해설 박스 하단 유튜브 풀영상 시청
+  function openYouTubeStory() {
+    const q = currentBatch[currentIndex];
+    const query = encodeURIComponent(`역사 ${q.category} ${q.question.substring(0, 15)}`);
+    window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank');
+  }
+
+  function openAboutModal() {
+    document.getElementById('about-modal').style.display = 'flex';
+  }
+
+  function closeAboutModal() {
+    document.getElementById('about-modal').style.display = 'none';
+  }
+
   function toggleMap() {
     const wrapper = document.getElementById('map-collapsible-wrapper');
     const btn = document.getElementById('map-toggle-btn');
@@ -848,12 +1101,17 @@
     }
   }
 
-  // 도전자 배너 확인 (?r=[품계ID]&s=[점수])
-  function checkChallenger() {
+  // URL 파라미터 확인 (?mode=munmu & ?r=..&s=..)
+  function checkUrlParams() {
     try {
       const params = new URLSearchParams(window.location.search);
+      const modeParam = params.get('mode');
       const rId = params.get('r');
       const score = params.get('s');
+
+      if (modeParam === 'munmu') {
+        currentMode = 'munmu';
+      }
 
       if (rId !== null && score !== null) {
         const challengerRank = RANKS.find(r => r.id === parseInt(rId)) || RANKS[0];
@@ -898,7 +1156,7 @@
   }
 
   async function initData() {
-    checkChallenger();
+    checkUrlParams();
 
     try {
       const cacheBuster = (SHEET_CSV_URL.includes("?") ? "&" : "?") + "_t=" + Date.now();
@@ -907,23 +1165,21 @@
       const csvText = await response.text();
       parseCSV(csvText);
 
-      if (allQuestions.length === 0) {
+      if (rawAllQuestions.length === 0) {
         loadFallbackQuestions();
       }
 
-      updateProfileUI();
-      startNewBatch();
+      selectQuizMode(currentMode);
     } catch (err) {
       console.warn("시트 연동 대기 중 기본 문제 탑재", err);
       loadFallbackQuestions();
-      updateProfileUI();
-      startNewBatch();
+      selectQuizMode(currentMode);
     }
   }
 
   function parseCSV(text) {
     const lines = text.split(/\r?\n/);
-    allQuestions = [];
+    rawAllQuestions = [];
 
     for (let i = 1; i < lines.length; i++) {
       const row = lines[i];
@@ -939,7 +1195,7 @@
       cols = cols.map(c => c ? c.replace(/^"|"$/g, '').trim() : '');
 
       if (cols.length >= 5 && cols[1]) {
-        allQuestions.push({
+        rawAllQuestions.push({
           category: cols[0] || '역사 일반',
           question: cols[1],
           opt1: cols[2],
@@ -954,30 +1210,37 @@
   }
 
   function loadFallbackQuestions() {
-    allQuestions = [
-      { category: '조선 왕실', question: '조선시대 왕의 얼굴을 그린 초상화를 부르던 공식 명칭은?', opt1: '어진', opt2: '의궤', ans: 1, explanation: '왕의 얼굴은 어진(御眞)이라 칭하며 도화서 화원이 그렸습니다.', level: 1, qNum: 1 },
-      { category: '삼국 영웅', question: '고구려 광개토대왕이 우리나라 최초로 독자 사용한 연호는?', opt1: '영락', opt2: '건원', ans: 1, explanation: '영원한 즐거움을 뜻하는 영락(永樂) 연호를 사용하여 천하관을 선포했습니다.', level: 2, qNum: 2 },
-      { category: '고려 왕조', question: '고려 숙종 때 은 한 근으로 한반도 지형을 본떠 만든 고액 은돈은?', opt1: '활구(은병)', opt2: '상평통보', ans: 1, explanation: '입구가 넓은 호병 모양의 활구는 귀족 관료들의 고액 거래용 은돈이었습니다.', level: 3, qNum: 3 },
-      { category: '조선 과학', question: '조선 세종 때 장영실 등이 제작한 해시계의 이름은?', opt1: '앙부일구', opt2: '자격루', ans: 1, explanation: '가마솥 모양의 해시계는 앙부일구(仰釜日晷)입니다. 자격루는 물시계입니다.', level: 1, qNum: 4 },
-      { category: '조선 제도', question: '조선시대 지방 수령을 감찰하고 행정을 감독하던 최고 지방관은?', opt1: '관찰사(감사)', opt2: '암행어사', ans: 1, explanation: '8도에 파견된 최고 책임 관원은 종2품 관찰사(관찰사 겸 감사)였습니다.', level: 2, qNum: 5 }
+    rawAllQuestions = [
+      { category: '삼국 시대', question: '신라의 삼국통일을 최종 완성한 제30대 국왕은 누구일까요?', opt1: '문무왕', opt2: '진흥왕', ans: 1, explanation: '진흥왕은 영토를 크게 넓혔고, 삼국통일의 마침표를 찍은 왕은 문무왕입니다.', level: 1, qNum: 1 },
+      { category: '삼국 인물', question: '문무왕의 친아버지는 삼국통일의 기틀을 닦은 누구일까요?', opt1: '태종 무열왕 (김춘추)', opt2: '김유신 장군', ans: 1, explanation: '문무왕은 김춘추의 맏아들이며, 외삼촌은 김유신 장군입니다.', level: 1, qNum: 2 },
+      { category: '나당 전쟁', question: '신라군이 경기 연천에서 당나라 20만 대군을 궤멸시킨 육상 최대 결전은?', opt1: '매소성 전투', opt2: '살수 대첩', ans: 1, explanation: '675년 매소성에서 당나라 군대를 격파하고 군마 3만 필을 노획했습니다.', level: 1, qNum: 3 },
+      { category: '신라 설화', question: '문무왕은 죽어서 어떤 영물이 되어 왜구를 막겠다고 유언했을까요?', opt1: '동해의 큰 용', opt2: '하늘의 봉황', ans: 1, explanation: '죽은 뒤 동해의 호국 대룡이 되어 왜적을 막겠다는 유언을 남겼습니다.', level: 1, qNum: 4 },
+      { category: '문화 유산', question: '경북 경주 앞바다 바위섬에 마련된 문무왕의 바다 무덤 명칭은?', opt1: '문무대왕릉 (대왕암)', opt2: '무령왕릉', ans: 1, explanation: '동해안 바위섬 가운데 수로를 내고 유골을 안치한 신라의 바다 수중릉입니다.', level: 1, qNum: 5 }
     ];
   }
 
+  // 🎮 난이도 점진적 상승 알고리즘 (초반 난이도 1 우선 출제)
   function startNewBatch() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('quiz-content').style.display = 'block';
 
-    let available = allQuestions.filter(q => !solvedIndexes.has(q.qNum));
+    const pool = activeQuestions.length > 0 ? activeQuestions : rawAllQuestions;
+    let available = pool.filter(q => !solvedIndexes.has(q.qNum));
 
-    // 700문항 완파 시 천하통일 알림 및 순환
     if (available.length === 0) {
-      alert("👑 경축 천하통일! 준비된 모든 문제를 완파하셨습니다! 이제 시즌 2 아시아 대륙 정복으로 나아갑니다. 문제를 다시 섞습니다.");
+      alert("👑 경축 완파! 현재 모드의 모든 문제를 완파하셨습니다! 문제를 다시 섞습니다.");
       solvedIndexes.clear();
       localStorage.removeItem('solved_indices');
-      available = [...allQuestions];
+      available = [...pool];
     }
 
-    available.sort(() => 0.5 - Math.random());
+    // 초반(정답 15개 미만)에는 난이도 1(초급 상식) 우선 정렬 ➔ 도파민 폭발
+    if (userExp < 15) {
+      available.sort((a, b) => (a.level || 1) - (b.level || 1) || Math.random() - 0.5);
+    } else {
+      available.sort(() => 0.5 - Math.random());
+    }
+
     const batchSize = Math.min(5, available.length);
     currentBatch = available.slice(0, batchSize);
 
@@ -993,7 +1256,7 @@
     document.getElementById('q-progress').innerText = `문항 ${currentIndex + 1} / ${currentBatch.length}`;
     document.getElementById('q-text').innerText = q.question;
 
-    // 보기 무작위 셔플 (1번 정답 쏠림 방지)
+    // 보기 무작위 셔플
     const isFlipped = Math.random() < 0.5;
     if (isFlipped) {
       document.getElementById('opt-1-text').innerText = q.opt2;
@@ -1005,18 +1268,6 @@
       q.currentScreenAns = q.ans;
     }
 
-    const hintWrapper = document.getElementById('hint-wrapper');
-    const hintText = document.getElementById('hint-text');
-    hintText.style.display = 'none';
-
-    if (q.level === 3) {
-      hintWrapper.style.display = 'block';
-      const hintSummary = q.explanation.split('.')[0] + '...';
-      hintText.innerText = `💡 [암행어사 밀서]: ${hintSummary}`;
-    } else {
-      hintWrapper.style.display = 'none';
-    }
-
     const btns = document.querySelectorAll('.btn-option');
     btns.forEach(b => {
       b.className = 'btn-option';
@@ -1025,11 +1276,6 @@
 
     document.getElementById('explanation').style.display = 'none';
     document.getElementById('next-btn').style.display = 'none';
-  }
-
-  function toggleHint() {
-    const hintText = document.getElementById('hint-text');
-    hintText.style.display = (hintText.style.display === 'block') ? 'none' : 'block';
   }
 
   function selectAnswer(userPick) {
@@ -1057,9 +1303,9 @@
     localStorage.setItem('user_history_score', totalScore.toString());
     localStorage.setItem('history_user_exp', userExp.toString());
 
-    const expBox = document.getElementById('explanation');
-    expBox.innerHTML = `<strong>${isCorrect ? '✅ 급제 (정답)!' : '❌ 낙방 (오답)!'}</strong><br>${q.explanation}`;
-    expBox.style.display = 'block';
+    const expText = document.getElementById('exp-text');
+    expText.innerHTML = `<strong>${isCorrect ? '✅ 급제 (정답)!' : '❌ 낙방 (오답)!'}</strong><br>${q.explanation}`;
+    document.getElementById('explanation').style.display = 'block';
 
     updateProfileUI();
 
@@ -1093,7 +1339,7 @@
     const retryBtn = document.getElementById('retry-btn');
     const season2Alert = document.getElementById('season2-alert');
 
-    const totalQ = allQuestions.length || 700;
+    const totalQ = activeQuestions.length > 0 ? activeQuestions.length : (rawAllQuestions.length || 900);
     const currentRank = getRankByExp(userExp);
 
     sendResultToGoogleSheet(batchCorrectCount, currentRank.title, solvedIndexes.size, totalQ, batchWrongQuestions, totalExamCount);
@@ -1101,13 +1347,13 @@
     const isSeason2Unlocked = (userExp >= 500 || solvedIndexes.size >= totalQ);
     season2Alert.style.display = isSeason2Unlocked ? 'block' : 'none';
 
-    // 모달 내 영토 정복 상태 업데이트
+    // 모달 내 영토 정복 상태
     const conqueredTarget = Math.max(80, Math.floor(totalQ * 0.7));
     const conquered = Math.min(8, Math.floor((userExp / conqueredTarget) * 8));
     document.getElementById('modal-conquered-status').innerText = `${conquered} / 8도 평정 완료`;
 
     if (batchCorrectCount >= 3) {
-      modalTitle.innerText = "🎉 축 급제! 8도 진격";
+      modalTitle.innerText = "🎉 축 급제! 진격 성공";
       modalTitle.style.color = "var(--point-color)";
       scoreText.innerHTML = `${currentBatch.length}문제 중 <strong>${batchCorrectCount}문제</strong> 급제! (+${batchCorrectCount * 10}점 획득)`;
       rankAlert.innerHTML = `현재 관직: <strong>${currentRank.title}</strong> (${currentRank.desc})<br>누적 정답 수: <strong>${userExp}제</strong> | 누적 완주: <strong>${solvedIndexes.size} / ${totalQ}제</strong>`;
@@ -1163,9 +1409,8 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 바이럴 공유: ?r=[품계ID]&s=[점수] 단축 파라미터 적용
   function shareQuiz() {
-    const totalQ = allQuestions.length || 700;
+    const totalQ = activeQuestions.length > 0 ? activeQuestions.length : (rawAllQuestions.length || 900);
     const currentRank = getRankByExp(userExp);
     const conqueredTarget = Math.max(80, Math.floor(totalQ * 0.7));
     const conquered = Math.min(8, Math.floor((userExp / conqueredTarget) * 8));
@@ -1173,6 +1418,7 @@
     const shareUrl = new URL(window.location.href);
     shareUrl.searchParams.set('r', currentRank.id.toString());
     shareUrl.searchParams.set('s', totalScore.toString());
+    if (currentMode === 'munmu') shareUrl.searchParams.set('mode', 'munmu');
 
     const shareText = `[조선 과거시험] 나의 관직은 '${currentRank.title}' (${userExp}문제 돌파, 전국 ${conquered}도 평정)! 감히 내 학문에 도전하여 천하통일을 이룰 자 누구인가?`;
 
@@ -1189,9 +1435,8 @@
     }
   }
 
-  // 8도 지도 및 품계 UI 동기화
   function updateProfileUI() {
-    const totalQ = allQuestions.length || 700;
+    const totalQ = activeQuestions.length > 0 ? activeQuestions.length : (rawAllQuestions.length || 900);
     const solvedCount = solvedIndexes.size;
     const progressRatio = Math.min(1.0, solvedCount / totalQ);
 
@@ -1199,50 +1444,35 @@
     document.getElementById('user-exp').innerText = userExp;
     document.getElementById('progress-fill').style.width = `${progressRatio * 100}%`;
 
-    // 누적 정답 수(Exp) 기준 품계 산출
     const rank = getRankByExp(userExp);
     document.getElementById('user-rank').innerText = rank.title;
 
-    // 평정 영토 계산: 정답 누적량에 따라 8도 점등
     const conqueredTarget = Math.max(80, Math.floor(totalQ * 0.7));
     const conquered = Math.min(8, Math.floor((userExp / conqueredTarget) * 8));
     document.getElementById('conquered-count').innerText = `${conquered} / 8도`;
 
-    // 1) 텍스트 태그 반영
     const tags = document.querySelectorAll('.p-tag');
     tags.forEach((tag, idx) => {
-      if (idx < conquered) {
-        tag.classList.add('conquered');
-      } else {
-        tag.classList.remove('conquered');
-      }
+      if (idx < conquered) tag.classList.add('conquered');
+      else tag.classList.remove('conquered');
     });
 
-    // 2) 미니 인디케이터 점(Dot) 반영 (접혀있어도 8개 점으로 점령도 확인)
     const dots = document.querySelectorAll('.p-dot');
     dots.forEach((dot, idx) => {
-      if (idx < conquered) {
-        dot.classList.add('conquered');
-      } else {
-        dot.classList.remove('conquered');
-      }
+      if (idx < conquered) dot.classList.add('conquered');
+      else dot.classList.remove('conquered');
     });
 
-    // 3) SVG 지도 지역 반영
-    const provinceOrder = [0, 1, 2, 3, 4, 5, 6, 7]; // 경기, 충청, 전라, 경상, 강원, 황해, 평안, 함경
+    const provinceOrder = [0, 1, 2, 3, 4, 5, 6, 7];
     provinceOrder.forEach((pIndex, step) => {
       const regionEl = document.getElementById(`map-p-${pIndex}`);
       if (regionEl) {
-        if (step < conquered) {
-          regionEl.classList.add('conquered');
-        } else {
-          regionEl.classList.remove('conquered');
-        }
+        if (step < conquered) regionEl.classList.add('conquered');
+        else regionEl.classList.remove('conquered');
       }
     });
   }
 
-  // Exp 기반 11단계 품계 계산 함수
   function getRankByExp(exp) {
     let current = RANKS[0];
     for (let r of RANKS) {
