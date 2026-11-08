@@ -939,6 +939,35 @@
   </div>
 </div>
 
+
+<!-- 👑 문무 200제 완전 정복 축하 모달 -->
+<div class="modal-overlay" id="munmu-clear-modal">
+  <div class="modal-content">
+    <div class="modal-title" style="color:#d4af37; font-size:1.45rem;">👑 신라 최고 관직 [태대각간] 등극!</div>
+    <div style="font-size:1.02rem; font-weight:800; color:var(--point-color); margin:8px 0;">대하사극 〈문무〉 200문항 완전 정복 달성!</div>
+    
+    <div style="background:#f1ede2; border:1.5px solid #d4c8b2; border-radius:10px; padding:13px; text-align:left; font-size:0.86rem; line-height:1.6; color:#333; margin:12px 0;">
+      📜 <strong>[문무대왕 어명 교서]</strong><br>
+      "그대는 매소성과 기벌포, 나당전쟁의 모든 격전을 돌파하고 삼국통일의 역사를 꿰뚫었도다! 이에 김유신 장군과 동급인 신라 으뜸 벼슬 <strong>[태대각간(太大角干)]</strong>에 봉하노라!"<br><br>
+      📺 <strong>"이제 문무왕 시대의 모든 진실을 마스터하셨으니, 방송되는 대하사극 〈문무〉를 본방사수하며 10배 더 흥미진진하게 시청해 보시오!"</strong>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-hipass" onclick="proceedToAllMode()" style="background:#b22222; border-color:#ffd32a; padding:13px;">
+        📜 이 기세를 몰아 8도 영토 평정전(900제) 진격하기 ➜
+      </button>
+
+      <button class="btn-share" onclick="shareMunmuClear()">
+        📢 [태대각간] 등극 자랑하고 친구에게 도전장 보내기
+      </button>
+
+      <button class="btn-retry" onclick="resetMunmuBatch()" style="display:flex;">
+        🔄 문무 200제 다시 섞어서 풀어보기
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- 📜 소개 & 문의하기 모달 -->
 <div class="modal-overlay" id="about-modal">
   <div class="modal-content">
@@ -969,9 +998,9 @@
     <div class="about-section" style="background:#f2ede3; border:1px solid #d4c8b2; border-radius:8px; padding:10px 12px; margin-top:10px;">
       <div class="about-heading" style="color:#2c251e;">📮 오답 제보 및 비즈니스 제휴 문의</div>
       <div style="font-size:0.82rem; color:#444; line-height:1.6; margin-top:4px;">
-        • <strong>문의 이메일:</strong> <a href="mailto:contact@example.com" id="about-email" style="color:var(--point-color); font-weight:bold; text-decoration:underline;">contact@example.com</a><br>
-        • <strong>카카오톡 오픈채팅:</strong> <a href="https://open.kakao.com/" target="_blank" id="about-kakao" style="color:#b22222; font-weight:bold; text-decoration:underline;">1:1 오픈채팅 문의하기 ➜</a><br>
-        • <strong>공식 유튜브 채널:</strong> <a href="https://www.youtube.com/@역사퀴즈" target="_blank" id="about-youtube" style="color:#c62828; font-weight:bold; text-decoration:underline;">역사 퀴즈 공식 유튜브 바로가기 ➜</a>
+        • <strong>문의 이메일:</strong> <a href="mailto:tellusgoodthing@gmail.com" id="about-email" style="color:var(--point-color); font-weight:bold; text-decoration:underline;">tellusgoodthing@gmail.com</a><br>
+        • <strong>카카오톡 오픈채팅:</strong> <a href="https://open.kakao.com/o/s6dpy6Vi" target="_blank" id="about-kakao" style="color:#b22222; font-weight:bold; text-decoration:underline;">1:1 오픈채팅 문의하기 ➜</a><br>
+        • <strong>공식 유튜브 채널:</strong> <a href="https://www.youtube.com/@today_historyQ" target="_blank" id="about-youtube" style="color:#c62828; font-weight:bold; text-decoration:underline;">역사 퀴즈 공식 유튜브 바로가기 ➜</a>
       </div>
     </div>
 
@@ -989,7 +1018,7 @@
   const LOG_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyBxph1RhHUGhm9As0CVx5xmZooki5HmcuKfEZIZPXxajEUHpXlR8h24luDHmSNkTR/exec";
 
   // 📺 유튜브 채널 및 영상 연동 주소 (운영 채널 URL로 수정 가능)
-  const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/results?search_query=%EC%97%AD%EC%82%AC+%ED%80%B4%EC%A6%88";
+  const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@today_historyQ";
 
   // 11단계 정규 조선 품계 승급 시스템 (Exp 기준)
   const RANKS = [
@@ -1079,6 +1108,48 @@
     const q = currentBatch[currentIndex];
     const query = encodeURIComponent(`역사 ${q.category} ${q.question.substring(0, 15)}`);
     window.open(`https://www.youtube.com/results?search_query=${query}`, '_blank');
+  }
+
+  
+  // 문무 200제 완파 모달 제어
+  function showMunmuClearModal() {
+    document.getElementById('munmu-clear-modal').style.display = 'flex';
+    playFanfare(true);
+  }
+
+  function proceedToAllMode() {
+    document.getElementById('munmu-clear-modal').style.display = 'none';
+    selectQuizMode('all');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetMunmuBatch() {
+    document.getElementById('munmu-clear-modal').style.display = 'none';
+    solvedIndexes.clear();
+    localStorage.removeItem('solved_indices');
+    startNewBatch();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function shareMunmuClear() {
+    const shareUrl = new URL(window.location.href);
+    shareUrl.searchParams.set('mode', 'munmu');
+    shareUrl.searchParams.set('r', '10');
+    shareUrl.searchParams.set('s', totalScore.toString());
+
+    const shareText = `[대하사극 문무 특별전] 나당전쟁 200문항을 모두 완파하고 신라 최고 관직 [태대각간]에 등극했소! 이제 드라마 〈문무〉를 10배 더 재밌게 볼 수 있소. 그대도 도전해 보겠소?`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: '대하사극 문무 특별전 200제 완파',
+        text: shareText,
+        url: shareUrl.toString()
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText().then(() => {
+        alert("📢 [태대각간] 완파 도전 링크가 복사되었습니다! 친구나 단톡방에 자랑해 보세요.");
+      });
+    }
   }
 
   function openAboutModal() {
@@ -1228,10 +1299,15 @@
     let available = pool.filter(q => !solvedIndexes.has(q.qNum));
 
     if (available.length === 0) {
-      alert("👑 경축 완파! 현재 모드의 모든 문제를 완파하셨습니다! 문제를 다시 섞습니다.");
-      solvedIndexes.clear();
-      localStorage.removeItem('solved_indices');
-      available = [...pool];
+      if (currentMode === 'munmu') {
+        showMunmuClearModal();
+        return;
+      } else {
+        alert("👑 경축 완파! 8도 영토 평정전의 모든 문제를 완파하셨습니다! 문제를 다시 섞습니다.");
+        solvedIndexes.clear();
+        localStorage.removeItem('solved_indices');
+        available = [...pool];
+      }
     }
 
     // 초반(정답 15개 미만)에는 난이도 1(초급 상식) 우선 정렬 ➔ 도파민 폭발
